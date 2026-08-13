@@ -1,4 +1,4 @@
-# Ficha de proyecto — [nombre de tu proyecto]
+# Ficha de proyecto — [CHATBOT VETERINARIA]
 
 *Documento vivo. Se completa clase a clase — es tu model card en versión de borrador. Súbelo a tu repo como `docs/ficha_proyecto.md`.*
 
