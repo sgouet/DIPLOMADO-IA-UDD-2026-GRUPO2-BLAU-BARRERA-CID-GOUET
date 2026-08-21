@@ -92,7 +92,7 @@ Además, para una experiencia confiable, el resultado del triage debería utiliz
 
 Este flujo además mantiene el principio planteado en el proyecto VetFlow: utilizar IA para absorber tareas repetitivas y permitir que la interacción humana conserve el componente de **contención, empatía y criterio**, en lugar de intentar reemplazarlo.
 
-CLOUDE 
+CLAUDE 
 
 # **Vet Active Pro — Esquema Funcional del MVP**
 
