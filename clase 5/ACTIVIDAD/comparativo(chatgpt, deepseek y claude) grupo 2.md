@@ -1,4 +1,4 @@
-CHAT GPT (El mejor de nuestro punto de vista)
+CHAT GPT (El mejor desde nuestro punto de vista)
 
 ## **Visión UX/UI**
 
