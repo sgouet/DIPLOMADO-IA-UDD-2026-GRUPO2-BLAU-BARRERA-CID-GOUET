@@ -4,7 +4,7 @@
 
 ## 1. Nombre interno del proyecto
 
-Ejemplo: "Asistente visual para Taller Cerámica Rukan"
+VET ACTIVE PRO
 
 ## 2. Problema (2-3 frases)
 
