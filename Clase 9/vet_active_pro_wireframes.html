@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vet Active Pro — Wireframes &amp; Flujos</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#F5F7FA; color:#1A1A2E; }
+.page { max-width:430px; margin:0 auto; min-height:100vh; background:#FFFFFF; position:relative; }
+.topbar { background:#2E86AB; color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; }
+.topbar .back { cursor:pointer; font-size:20px; }
+.topbar h1 { font-size:17px; font-weight:600; flex:1; }
+.topbar .badge { background:rgba(255,255,255,.25); font-size:11px; padding:3px 8px; border-radius:10px; }
+.content { padding:16px; padding-bottom:80px; }
+.card { background:#FFFFFF; border:1px solid #E2E8F0; border-radius:14px; padding:16px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.card h2 { font-size:16px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+
+/* Botones */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:13px 20px; border:none; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; width:100%; }
+.btn-primary { background:#2E86AB; color:#fff; }
+.btn-secondary { background:#F1F5F9; color:#1A1A2E; }
+.btn-danger { background:#C73E1D; color:#fff; }
+.btn-success { background:#2E8B57; color:#fff; }
+.btn-warning { background:#F18F01; color:#fff; }
+.btn-sm { padding:9px 14px; font-size:13px; width:auto; border-radius:8px; }
+.btn-group { display:flex; gap:10px; }
+.btn-group .btn { flex:1; }
+
+/* Inputs */
+.input { width:100%; padding:13px 14px; border:1px solid #E2E8F0; border-radius:12px; font-size:15px; background:#F1F5F9; outline:none; transition:border .2s; }
+.input:focus { border-color:#2E86AB; }
+label.field { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#6B7280; text-transform:uppercase; letter-spacing:.3px; }
+.form-group { margin-bottom:16px; }
+
+/* Tabs */
+.tabs { display:flex; background:#FFFFFF; border-bottom:1px solid #E2E8F0; position:sticky; top:52px; z-index:9; }
+.tab { flex:1; text-align:center; padding:14px 0; font-size:13px; font-weight:600; color:#6B7280; cursor:pointer; position:relative; }
+.tab.active { color:#2E86AB; }
+.tab.active::after { content:''; position:absolute; bottom:0; left:20%; right:20%; height:3px; background:#2E86AB; border-radius:3px; }
+
+/* Bottom nav */
+.bottomnav { position:absolute; bottom:0; left:0; right:0; background:#FFFFFF; border-top:1px solid #E2E8F0; display:flex; justify-content:space-around; padding:8px 0 12px; z-index:10; }
+.bottomnav .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:11px; color:#6B7280; cursor:pointer; }
+.bottomnav .nav-item.active { color:#2E86AB; }
+.bottomnav .nav-item .icon { font-size:22px; }
+
+/* Status badges */
+.badge-critical { background:#FEE2E2; color:#C73E1D; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+.badge-high { background:#FFF3C4; color:#F18F01; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+.badge-low { background:#D1FAE5; color:#2E8B57; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+
+/* Severity bar */
+.severity-bar { display:flex; gap:6px; margin:12px 0; }
+.severity-bar .seg { flex:1; text-align:center; padding:10px 4px; border-radius:10px; font-size:12px; font-weight:700; color:#fff; }
+.seg-red { background:#C73E1D; }
+.seg-yellow { background:#F18F01; }
+.seg-green { background:#2E8B57; }
+
+/* Animal card */
+.animal-card { display:flex; gap:12px; align-items:center; padding:12px; border:1px solid #E2E8F0; border-radius:12px; margin-bottom:10px; }
+.animal-avatar { width:52px; height:52px; border-radius:14px; background:#F1F5F9; display:flex; align-items:center; justify-content:center; font-size:28px; }
+.animal-info { flex:1; }
+.animal-info .name { font-weight:700; font-size:15px; }
+.animal-info .detail { font-size:12px; color:#6B7280; }
+
+/* Flow arrows */
+.flow { display:flex; flex-direction:column; gap:0; }
+.flow-step { padding:14px 18px; border-left:3px solid #2E86AB; margin-bottom:2px; background:#F1F5F9; border-radius:0 10px 10px 0; }
+.flow-step .step-num { font-size:11px; font-weight:700; color:#2E86AB; text-transform:uppercase; }
+.flow-step .step-title { font-weight:600; font-size:14px; margin-top:3px; }
+.flow-step .step-desc { font-size:12px; color:#6B7280; margin-top:3px; }
+
+/* Checkbox row */
+.check-row { display:flex; align-items:center; gap:10px; padding:12px; border:1px solid #E2E8F0; border-radius:10px; margin-bottom:8px; cursor:pointer; }
+.check-row input { accent-color:#2E86AB; width:18px; height:18px; }
+
+/* Toast */
+.toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#2E86AB; color:#fff; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:600; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,.15); animation:fadeUp .3s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateX(-50%) translateY(20px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+/* Empty state */
+.empty { text-align:center; padding:40px 20px; color:#6B7280; }
+.empty .icon { font-size:48px; margin-bottom:12px; }
+.empty p { font-size:14px; }
+
+/* Tag */
+.tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:600; background:#F1F5F9; color:#1A1A2E; margin-right:6px; margin-bottom:6px; }
+
+/* Timeline */
+.timeline { position:relative; padding-left:24px; }
+.timeline::before { content:''; position:absolute; left:7px; top:0; bottom:0; width:2px; background:#E2E8F0; }
+.tl-item { position:relative; margin-bottom:18px; }
+.tl-item::before { content:''; position:absolute; left:-20px; top:4px; width:12px; height:12px; border-radius:50%; background:#2E86AB; border:2px solid #fff; }
+.tl-item .tl-time { font-size:11px; color:#6B7280; }
+.tl-item .tl-title { font-weight:600; font-size:14px; margin-top:2px; }
+</style>
+</head>
+<body>
+
+    <div id="splash" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Vet Active Pro</h1>
+            <span class="badge">Bienvenida</span>
+        </div>
+        <div class="content">
+            
+    <div class="empty">
+        <div class="icon">🐾</div>
+        <h2 style="margin-bottom:6px;">Tu clínica veterinaria, siempre contigo</h2>
+        <p style="margin-bottom:24px;">Agenda citas, triaje digital, comunidad y más — en una sola app.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:280px;margin:0 auto;">
+            <button class="btn btn-primary" onclick="show('login')">Iniciar Sesión</button>
+            <button class="btn btn-secondary" onclick="show('registro')">Crear Cuenta</button>
+        </div>
+    </div>
+
+        </div>
+        
+    </div>
+    <div id="login" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Iniciar Sesión</h1>
+            
+        </div>
+        <div class="content">
+            
+    <div class="card" style="margin-top:40px;">
+        <h2>🔐 Acceso</h2>
+        <div class="form-group">
+            <label class="field">Correo electrónico</label>
+            <input class="input" type="email" placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+            <label class="field">Contraseña</label>
+            <input class="input" type="password" placeholder="Tu contraseña">
+        </div>
+        <button class="btn btn-primary" onclick="show('home')">Entrar</button>
+        <p style="text-align:center;margin-top:14px;font-size:13px;color:#6B7280;">
+            ¿Olvidaste tu contraseña? <a href="#" style="color:#2E86AB;">Recuperar</a>
+        </p>
+    </div>
+    <div class="card">
+        <p style="text-align:center;font-size:13px;color:#6B7280;">
+            ¿Eres colaborador de la clínica? <a href="#" style="color:#2E86AB;">Acceso colaborador</a>
+        </p>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="registro" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Crear Cuenta</h1>
+            
+        </div>
+        <div class="content">
+            
+    <div class="card">
+        <h2>📝 Registro de Tutor</h2>
+        <div class="form-group">
+            <label class="field">Nombre completo</label>
+            <input class="input" type="text" placeholder="Juan Pérez">
+        </div>
+        <div class="form-group">
+            <label class="field">Correo electrónico</label>
+            <input class="input" type="email" placeholder="juan@email.com">
+        </div>
+        <div class="form-group">
+            <label class="field">Teléfono</label>
+            <input class="input" type="tel" placeholder="+57 300 123 4567">
+        </div>
+        <div class="form-group">
+            <label class="field">Contraseña</label>
+            <input class="input" type="password" placeholder="Mínimo 8 caracteres">
+        </div>
+        <button class="btn btn-primary" onclick="show('mascotas')">Continuar ▸</button>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#6B7280;">Al registrarte aceptas nuestros términos y política de privacidad.</p>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="home" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Inicio</h1>
+            <span class="badge">Dashboard</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:linear-gradient(135deg,#2E86AB,#A23B72);color:#fff;margin-bottom:16px;">
+        <h2 style="color:#fff;">🐕 Hola, Juan</h2>
+        <p style="color:rgba(255,255,255,.85);font-size:14px;margin-top:4px;">Tu próxima cita: <strong>Mañana, 10:30 a.m.</strong></p>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+            <span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">Max 🐶</span>
+            <span class="tag" style="background:rgba(255,255,255,.2);color:#fff;">Mia 🐱</span>
+        </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="show('citas')">
+            <div style="font-size:28px;">📅</div>
+            <div style="font-weight:700;font-size:13px;margin-top:6px;">Mis Citas</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="show('triaje')">
+            <div style="font-size:28px;">🏥</div>
+            <div style="font-weight:700;font-size:13px;margin-top:6px;">Triaje Rápido</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="show('tienda')">
+            <div style="font-size:28px;">🛒</div>
+            <div style="font-weight:700;font-size:13px;margin-top:6px;">Tienda</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;" onclick="show('comunidad')">
+            <div style="font-size:28px;">💬</div>
+            <div style="font-weight:700;font-size:13px;margin-top:6px;">Comunidad</div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>🔔 Actividad reciente</h2>
+        <div class="tl-item">
+            <div class="tl-time">Ayer, 18:30</div>
+            <div class="tl-title">Cita de Max — Revisión postoperatoria ✅</div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-time">2 ago</div>
+            <div class="tl-title">Compra de alimento Pedigree 🛒</div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-time">1 ago</div>
+            <div class="tl-title">Consulta por alergia de Mia 💊</div>
+        </div>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="mascotas" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Mis Mascotas</h1>
+            <span class="badge">Perfil</span>
+        </div>
+        <div class="content">
+            
+    <div class="animal-card">
+        <div class="animal-avatar">🐶</div>
+        <div class="animal-info">
+            <div class="name">Max — Pastor Alemán</div>
+            <div class="detail">5 años · Male · Vacunado ✓</div>
+        </div>
+        <span class="badge-low">Normal</span>
+    </div>
+    <div class="animal-card">
+        <div class="animal-avatar">🐱</div>
+        <div class="animal-info">
+            <div class="name">Mia — Gato Doméstico</div>
+            <div class="detail">2 años · Female · Interna ✂️</div>
+        </div>
+        <span class="badge-high">Pendiente</span>
+    </div>
+    <button class="btn btn-primary" style="margin-top:8px;">+ Agregar Mascota</button>
+    <p style="text-align:center;font-size:12px;color:#6B7280;margin-top:12px;">Toca una mascota para ver su historial médico.</p>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="citas" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Mis Citas</h1>
+            <span class="badge">Próximas</span>
+        </div>
+        <div class="content">
+            
+    <div style="display:flex;gap:6px;margin-bottom:14px;">
+        <span class="tag" style="background:#2E86AB;color:#fff;">Próximas</span>
+        <span class="tag">Historial</span>
+    </div>
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div>
+                <div style="font-weight:700;">Mañana, 10:30 a.m.</div>
+                <div style="font-size:13px;color:#6B7280;">Revisión postoperatoria — Max</div>
+            </div>
+            <span class="badge-low">Confirmada</span>
+        </div>
+        <div style="font-size:13px;color:#6B7280;">Dr. Carlos López · Sala 3</div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn btn-sm btn-secondary">💬 Chat</button>
+            <button class="btn btn-sm btn-danger" onclick="show('cancelar')">Cancelar</button>
+        </div>
+    </div>
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="font-weight:700;">Sábado, 15 ago · 4:00 p.m.</div>
+                <div style="font-size:13px;color:#6B7280;">Vacuna DHPP — Mia</div>
+            </div>
+            <span class="badge-high">Pendiente</span>
+        </div>
+        <div style="font-size:13px;color:#6B7280;">Dra. Ana Martínez · Sala 1</div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn btn-sm btn-secondary">💬 Chat</button>
+            <button class="btn btn-sm btn-danger" onclick="show('cancelar')">Cancelar</button>
+        </div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:8px;">+ Solicitar Nueva Cita</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="cita_tipo" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Solicitar Cita</h1>
+            <span class="badge">Paso 1 de 3</span>
+        </div>
+        <div class="content">
+            
+    <div class="form-group">
+        <label class="field">¿Qué necesitas?</label>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>🩺 Consulta médica</span>
+        </div>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>💉 Vacunación</span>
+        </div>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>🏥 Cirugía / Procedimiento</span>
+        </div>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>🦷 Dental</span>
+        </div>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>🏠 Visita domiciliaria</span>
+        </div>
+        <div class="check-row" onclick="this.querySelector('input').checked=!this.querySelector('input').checked">
+            <input type="checkbox"> <span>🧴 Estética / Grooming</span>
+        </div>
+    </div>
+    <button class="btn btn-primary" onclick="show('cita_mascota')">Siguiente ▸</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="cita_mascota" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Solicitar Cita</h1>
+            <span class="badge">Paso 2 de 3</span>
+        </div>
+        <div class="content">
+            
+    <div class="form-group">
+        <label class="field">Selecciona tu mascota</label>
+        <div class="check-row">
+            <input type="radio" name="mascota"> <span>🐶 Max — Pastor Alemán (5 años)</span>
+        </div>
+        <div class="check-row">
+            <input type="radio" name="mascota"> <span>🐱 Mia — Gato Doméstico (2 años)</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="field">Fecha preferida</label>
+        <input class="input" type="date">
+    </div>
+    <div class="form-group">
+        <label class="field">Hora preferida</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">8:00 a.m.</span>
+            <span class="tag" style="background:#2E86AB;color:#fff;cursor:pointer;">9:00 a.m.</span>
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">10:00 a.m.</span>
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">11:00 a.m.</span>
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">2:00 p.m.</span>
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">3:00 p.m.</span>
+            <span class="tag" style="background:#E2E8F0;cursor:pointer;">4:00 p.m.</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="field">Motivo de la visita (opcional)</label>
+        <textarea class="input" rows="3" placeholder="Describe brevemente el motivo..."></textarea>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-secondary" onclick="show('cita_tipo')">⬅ Atrás</button>
+        <button class="btn btn-primary" onclick="show('cita_confirm')">Siguiente ▸</button>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="cita_confirm" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Solicitar Cita</h1>
+            <span class="badge">Confirmación</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="border-color:#2E86AB;">
+        <h2>✅ Solicitud enviada</h2>
+        <div style="margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F1F5F9;">
+                <span style="color:#6B7280;">Servicio</span>
+                <strong>Consulta médica</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F1F5F9;">
+                <span style="color:#6B7280;">Mascota</span>
+                <strong>Max — Pastor Alemán</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F1F5F9;">
+                <span style="color:#6B7280;">Fecha</span>
+                <strong>Mañana, 10:30 a.m.</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                <span style="color:#6B7280;">Estado</span>
+                <span class="badge-low">En revisión</span>
+            </div>
+        </div>
+        <p style="font-size:13px;color:#6B7280;margin-top:12px;">
+            La clínica revisará tu solicitud y confirmará en las próximas horas. Recibirás una notificación.
+        </p>
+    </div>
+    <button class="btn btn-primary" onclick="show('home')">Volver al Inicio</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="cancelar" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Cancelar Cita</h1>
+            
+        </div>
+        <div class="content">
+            
+    <div class="card">
+        <h2>⚠️ Cancelar cita</h2>
+        <p style="font-size:14px;">¿Estás seguro de que deseas cancelar la cita del <strong>Mañana, 10:30 a.m.</strong> para Max?</p>
+        <div class="form-group" style="margin-top:16px;">
+            <label class="field">Motivo de la cancelación</label>
+            <select class="input">
+                <option>Reprogramar fecha</option>
+                <option>La mascota ya no necesita atención</option>
+                <option>Encontré otra clínica</option>
+                <option>Otro motivo</option>
+            </select>
+        </div>
+        <button class="btn btn-danger" style="margin-bottom:10px;">Confirmar Cancelación</button>
+        <button class="btn btn-secondary" onclick="show('citas')">Volver</button>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="triaje" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Triaje Digital</h1>
+            <span class="badge">Pre-llegada</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:linear-gradient(135deg,#1A5F7A,#2E86AB);color:#fff;margin-bottom:16px;">
+        <h2 style="color:#fff;">🏥 Modo Triaje — Digital</h2>
+        <p style="color:rgba(255,255,255,.9);font-size:13px;margin-top:4px;">Describe los síntomas de tu mascota. Nuestro sistema evaluará la urgencia.</p>
+    </div>
+    <div class="card">
+        <h2>🐾 ¿Qué mascota necesita atención?</h2>
+        <div class="check-row">
+            <input type="radio" name="tmascota"> <span>🐶 Max — Pastor Alemán</span>
+        </div>
+        <div class="check-row">
+            <input type="radio" name="tmascota"> <span>🐱 Mia — Gato Doméstico</span>
+        </div>
+    </div>
+    <div class="card">
+        <h2>💬 Preguntas de triaje</h2>
+        <p style="font-size:13px;color:#6B7280;margin-bottom:10px;">Responde las siguientes preguntas para evaluar la urgencia:</p>
+        <div class="form-group">
+            <label class="field">¿Sigue respirando con normalidad?</label>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-success" onclick="this.textContent='✓ Normal';this.className='btn btn-sm btn-success'">Normal</button>
+                <button class="btn btn-sm btn-warning" onclick="this.textContent='⚠ Con esfuerzo';this.className='btn btn-sm btn-warning'">Con esfuerzo</button>
+                <button class="btn btn-sm btn-danger" onclick="this.textContent='✗ Dificultad';this.className='btn btn-sm btn-danger'">Dificultad</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="field">¿Está consciente y responde a su nombre?</label>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-success" onclick="this.textContent='✓ Alerta';this.className='btn btn-sm btn-success'">Alerta</button>
+                <button class="btn btn-sm btn-warning" onclick="this.textContent='⚠ Letárgico';this.className='btn btn-sm btn-warning'">Letárgico</button>
+                <button class="btn btn-sm btn-danger" onclick="this.textContent='✗ Inconsciente';this.className='btn btn-sm btn-danger'">Inconsciente</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="field">¿Presenta sangrado activo o hemorragia?</label>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-success" onclick="this.textContent='✓ No';this.className='btn btn-sm btn-success'">No</button>
+                <button class="btn btn-sm btn-warning" onclick="this.textContent='⚠ Leve';this.className='btn btn-sm btn-warning'">Leve</button>
+                <button class="btn btn-sm btn-danger" onclick="this.textContent='✗ Severo';this.className='btn btn-sm btn-danger'">Severo</button>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>📝 Síntomas adicionales (opcional)</h2>
+        <textarea class="input" rows="3" placeholder="Describe lo que observes..."></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="show('triaje_resultado')">🔍 Evaluar Urgencia</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="triaje_resultado" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Resultado del Triaje</h1>
+            <span class="badge">Semáforo de Gravedad</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="text-align:center;">
+        <h2>📊 Evaluación completada</h2>
+        <p style="font-size:13px;color:#6B7280;">Tu mascota ha sido categorizada según el protocolo de triaje</p>
+    </div>
+    <div class="card" style="border-color:#F18F01;">
+        <div style="text-align:center;">
+            <div style="font-size:48px;">🟡</div>
+            <h2 style="color:#F18F01;">Nivel 2 — Urgencia Media / Prioritaria</h2>
+        </div>
+        <p style="font-size:14px;margin-top:8px;">Tu mascota requiere atención rápida pero no tiene un riesgo vital inmediato.</p>
+    </div>
+    <div class="severity-bar">
+        <div class="seg seg-red">🔴 N1<br><span style="font-size:10px;">Crítico</span></div>
+        <div class="seg seg-yellow">🟡 N2<br><span style="font-size:10px;">Prioritario</span></div>
+        <div class="seg seg-green">🟢 N3<br><span style="font-size:10px;">Normal</span></div>
+    </div>
+    <div class="card">
+        <h2>📋 ¿Qué sigue?</h2>
+        <div class="flow">
+            <div class="flow-step">
+                <div class="step-num">Paso 1</div>
+                <div class="step-title">Reorganización de cola</div>
+                <div class="step-desc">Tu mascota será priorizada sobre citas regulares</div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">Paso 2</div>
+                <div class="step-title">Notificación push</div>
+                <div class="step-desc">Recibirás una alerta con la hora estimada de atención</div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">Paso 3</div>
+                <div class="step-title">Llega a la clínica</div>
+                <div class="step-desc">Plazo sugerido: <strong>1 a 2 horas</strong> para ser atendido</div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">Paso 4</div>
+                <div class="step-title">Atención prioritaria</div>
+                <div class="step-desc">Se te asignará un box directamente sin pasar por sala de espera</div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-secondary" onclick="show('triaje')">Re-evaluar</button>
+        <button class="btn btn-primary" onclick="show('home')">Volver al Inicio</button>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="triaje_critico" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>¡EMERGENCIA! 🚨</h1>
+            <span class="badge">Nivel 1 — Crítico</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:#FEE2E2;border-color:#C73E1D;text-align:center;">
+        <div style="font-size:56px;">🚨</div>
+        <h2 style="color:#C73E1D;">Nivel 1 — Urgencia Alta / Crítica</h2>
+        <p style="color:#C73E1D;font-size:14px;margin-top:4px;">Riesgo inminente para la vida. ¡Actúa inmediatamente!</p>
+    </div>
+    <div class="card">
+        <h2>🏥 Traslado inmediato</h2>
+        <div class="flow">
+            <div class="flow-step" style="border-left-color:#C73E1D;">
+                <div class="step-num">⚡ Alerta activada</div>
+                <div class="step-title">Señal sonora y visual para el equipo médico</div>
+                <div class="step-desc">El equipo de veterinarios ha sido notificado de inmediato</div>
+            </div>
+            <div class="flow-step" style="border-left-color:#C73E1D;">
+                <div class="step-num">🏃 Ve directo al box</div>
+                <div class="step-title">Sin sala de espera</div>
+                <div class="step-desc">Tu mascota será atendida en el primer box disponible</div>
+            </div>
+            <div class="flow-step" style="border-left-color:#C73E1D;">
+                <div class="step-num">⏱️ Tiempo límite</div>
+                <div class="step-title">Máximo 1 hora</div>
+                <div class="step-desc">Es fundamental llegar a la clínica en las próximas 60 minutos</div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>📞 ¿Necesitas ayuda para llegar?</h2>
+        <button class="btn btn-danger" style="margin-bottom:8px;">🚑 Llamar urgencias</button>
+        <button class="btn btn-secondary" style="margin-bottom:8px;">📍 Ver ruta más cercana</button>
+        <button class="btn btn-secondary">💬 Chat con recepción</button>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="triaje_recepcion" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Triaje en Recepción</h1>
+            <span class="badge">Modo Colaborador</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:linear-gradient(135deg,#A23B72,#C73E1D);color:#fff;margin-bottom:16px;">
+        <h2 style="color:#fff;">📋 Triaje Visual Guiado</h2>
+        <p style="color:rgba(255,255,255,.9);font-size:13px;">Evaluación exprés — menos de 30 segundos por paciente</p>
+    </div>
+    <div class="card">
+        <h2>🐾 Paciente: <span style="color:#6B7280;">[ Nombre ]</span></h2>
+        <p style="font-size:13px;color:#6B7280;">Ingresar datos del paciente que acaba de llegar</p>
+    </div>
+    <div class="card">
+        <h2>🧠 Nivel de consciencia</h2>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-success">Alerta</button>
+            <button class="btn btn-sm btn-warning">Letárgico</button>
+            <button class="btn btn-sm btn-danger">Estupor/Inconsciente</button>
+        </div>
+    </div>
+    <div class="card">
+        <h2>🫁 Esfuerzo respiratorio</h2>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-success">Normal</button>
+            <button class="btn btn-sm btn-warning">Boca abierta/Jadeo</button>
+            <button class="btn btn-sm btn-danger">Dificultad severa</button>
+        </div>
+    </div>
+    <div class="card">
+        <h2>🎨 Color de mucosas</h2>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-success">Rosadas</button>
+            <button class="btn btn-sm btn-warning">Pálidas/Blancas</button>
+            <button class="btn btn-sm btn-danger">Cianóticas (azuladas)</button>
+        </div>
+    </div>
+    <div class="card">
+        <h2>💢 Dolor o sangrado</h2>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-success">Sin dolor evidente</button>
+            <button class="btn btn-sm btn-warning">Quejidos/Agresividad</button>
+            <button class="btn btn-sm btn-danger">Sangrado activo</button>
+        </div>
+    </div>
+    <button class="btn btn-primary" onclick="show('triaje_resultado')">🔍 Categorizar Automáticamente</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="tienda" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Tienda Vet Active</h1>
+            <span class="badge">E-commerce</span>
+        </div>
+        <div class="content">
+            
+    <div class="card">
+        <h2>🔍 Buscar productos</h2>
+        <input class="input" type="text" placeholder="Alimento, medicamentos, accesorios...">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+        <span class="tag" style="background:#2E86AB;color:#fff;">🐕 Perros</span>
+        <span class="tag" style="background:#A23B72;color:#fff;">🐱 Gatos</span>
+        <span class="tag">🍖 Alimentos</span>
+        <span class="tag">💊 Medicamentos</span>
+        <span class="tag">🎾 Accesorios</span>
+        <span class="tag">🧴 Higiene</span>
+    </div>
+    <div class="card" style="cursor:pointer;">
+        <div style="display:flex;gap:12px;">
+            <div style="width:64px;height:64px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;">🥩</div>
+            <div style="flex:1;">
+                <div style="font-weight:700;">Alimento Pedigree Adulto 15kg</div>
+                <div style="font-size:13px;color:#6B7280;">Perros grandes · Proteína premium</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-weight:700;color:#2E86AB;">$149.990</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto;padding:6px 12px;">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" style="cursor:pointer;">
+        <div style="display:flex;gap:12px;">
+            <div style="width:64px;height:64px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;">💊</div>
+            <div style="flex:1;">
+                <div style="font-weight:700;">Antipulgas Frontline Plus 3un</div>
+                <div style="font-size:13px;color:#6B7280;">Protección 30 días · Para perros y gatos</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-weight:700;color:#2E86AB;">$79.990</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto;padding:6px 12px;">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" style="cursor:pointer;">
+        <div style="display:flex;gap:12px;">
+            <div style="width:64px;height:64px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;">🧸</div>
+            <div style="flex:1;">
+                <div style="font-weight:700;">Juguete mordedor Kong</div>
+                <div style="font-size:13px;color:#6B7280;">Resistente · Diversión segura</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-weight:700;color:#2E86AB;">$24.990</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto;padding:6px 12px;">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="carrito" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Carrito de Compras</h1>
+            
+        </div>
+        <div class="content">
+            
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F1F5F9;">
+            <div style="font-weight:700;">Alimento Pedigree 15kg</div>
+            <span style="font-weight:700;color:#2E86AB;">$149.990</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F1F5F9;">
+            <div style="font-weight:700;">Frontline Plus 3un</div>
+            <span style="font-weight:700;color:#2E86AB;">$79.990</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;">
+            <div style="font-weight:700;">Juguete Kong</div>
+            <span style="font-weight:700;color:#2E86AB;">$24.990</span>
+        </div>
+    </div>
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+            <span style="font-weight:700;">Total</span>
+            <span style="font-weight:700;font-size:18px;color:#2E86AB;">$254.970</span>
+        </div>
+        <button class="btn btn-primary" style="margin-bottom:10px;">🛒 Finalizar Compra</button>
+        <button class="btn btn-secondary" onclick="show('tienda)">Seguir comprando</button>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="comunidad" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Comunidad</h1>
+            <span class="badge">Foro</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:linear-gradient(135deg,#2E86AB,#2E8B57);color:#fff;margin-bottom:16px;">
+        <h2 style="color:#fff;">💬 Comunidad Vet Active</h2>
+        <p style="color:rgba(255,255,255,.9);font-size:13px;">Conecta con otros tutores, comparte experiencias y recibe consejos</p>
+    </div>
+    <div class="card">
+        <div style="display:flex;gap:6px;margin-bottom:12px;">
+            <span class="tag" style="background:#E2E8F0;">🐶 Perros</span>
+            <span class="tag" style="background:#E2E8F0;">🐱 Gatos</span>
+            <span class="tag" style="background:#E2E8F0;">🏥 Salud</span>
+            <span class="tag" style="background:#E2E8F0;">🍎 Nutrición</span>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:8px;">
+            <div style="display:flex;gap:10px;align-items:center;">
+                <div style="width:36px;height:36px;background:#F1F5F9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;">👩‍⚕️</div>
+                <div style="flex:1;">
+                    <div style="font-weight:600;font-size:13px;">Consejos de grooming para perros de pelo largo</div>
+                    <div style="font-size:11px;color:#6B7280;">23 respuestas · Hace 2 horas</div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:8px;">
+            <div style="display:flex;gap:10px;align-items:center;">
+                <div style="width:36px;height:36px;background:#F1F5F9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;">🐶</div>
+                <div style="flex:1;">
+                    <div style="font-weight:600;font-size:13px;">Mi perro tiene alergia al pollo ¿Qué alternativas?</div>
+                    <div style="font-size:11px;color:#6B7280;">15 respuestas · Hace 5 horas</div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:8px;">
+            <div style="display:flex;gap:10px;align-items:center;">
+                <div style="width:36px;height:36px;background:#F1F5F9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;">🐱</div>
+                <div style="flex:1;">
+                    <div style="font-weight:600;font-size:13px;">¿Es normal que mi gato duerma 16 horas al día?</div>
+                    <div style="font-size:11px;color:#6B7280;">8 respuestas · Ayer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:8px;">+ Crear nuevo tema</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="perfil" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Mi Perfil</h1>
+            <span class="badge">Configuración</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="text-align:center;">
+        <div style="width:72px;height:72px;background:linear-gradient(135deg,#2E86AB,#A23B72);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:36px;color:#fff;">👤</div>
+        <h2>Juan Pérez</h2>
+        <p style="color:#6B7280;font-size:13px;">juan@email.com</p>
+    </div>
+    <div class="card">
+        <h2>🔔 Preferencias</h2>
+        <div class="check-row">
+            <input type="checkbox" checked> <span>Notificaciones de citas</span>
+        </div>
+        <div class="check-row">
+            <input type="checkbox" checked> <span>Recordatorios de vacunación</span>
+        </div>
+        <div class="check-row">
+            <input type="checkbox"> <span>Promociones de la tienda</span>
+        </div>
+        <div class="check-row">
+            <input type="checkbox"> <span>Tips de salud de mascotas</span>
+        </div>
+    </div>
+    <div class="card">
+        <h2>🔧 Configuración</h2>
+        <div class="check-row" style="cursor:pointer;">
+            <span>👤 Datos personales</span>
+            <span style="color:#6B7280;">›</span>
+        </div>
+        <div class="check-row" style="cursor:pointer;">
+            <span>🏥 Mi clínica favorita</span>
+            <span style="color:#6B7280;">›</span>
+        </div>
+        <div class="check-row" style="cursor:pointer;">
+            <span>💳 Métodos de pago</span>
+            <span style="color:#6B7280;">›</span>
+        </div>
+        <div class="check-row" style="cursor:pointer;">
+            <span>📜 Términos y políticas</span>
+            <span style="color:#6B7280;">›</span>
+        </div>
+        <div class="check-row" style="cursor:pointer;">
+            <span>❓ Preguntas frecuentes</span>
+            <span style="color:#6B7280;">›</span>
+        </div>
+    </div>
+    <button class="btn btn-danger">Cerrar sesión</button>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="colaborador" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Panel Colaborador</h1>
+            <span class="badge">Modo Recepción</span>
+        </div>
+        <div class="content">
+            
+    <div class="card" style="background:linear-gradient(135deg,#A23B72,#C73E1D);color:#fff;margin-bottom:16px;">
+        <h2 style="color:#fff;">👩‍💼 Recepción</h2>
+        <p style="color:rgba(255,255,255,.9);font-size:13px;">Dr. Carlos López · Veterinario</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div class="card" style="cursor:pointer;margin-bottom:0;text-align:center;">
+            <div style="font-size:28px;">📋</div>
+            <div style="font-weight:700;font-size:12px;margin-top:6px;">Hoy: 12 citas</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;text-align:center;">
+            <div style="font-size:28px;">🚨</div>
+            <div style="font-weight:700;font-size:12px;margin-top:6px;">2 Urgencias</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;text-align:center;">
+            <div style="font-size:28px;">🛒</div>
+            <div style="font-weight:700;font-size:12px;margin-top:6px;">5 Ventas</div>
+        </div>
+        <div class="card" style="cursor:pointer;margin-bottom:0;text-align:center;">
+            <div style="font-size:28px;">📊</div>
+            <div style="font-weight:700;font-size:12px;margin-top:6px;">Estadísticas</div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>📋 Cola de atención de hoy</h2>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <span class="tag" style="background:#FEE2E2;color:#C73E1D;">🔴 2 Urgentes</span>
+            <span class="tag" style="background:#FFF3C4;color:#F18F01;">🟡 3 Prioritarias</span>
+            <span class="tag" style="background:#D1FAE5;color:#2E8B57;">🟢 7 Normales</span>
+        </div>
+        <div class="animal-card">
+            <div class="animal-avatar">🐶</div>
+            <div class="animal-info">
+                <div class="name">Max 🔴 Nivel 1</div>
+                <div class="detail">Dificultad respiratoria · Llegó hace 10 min</div>
+            </div>
+            <span class="badge-critical">CRÍTICO</span>
+        </div>
+        <div class="animal-card">
+            <div class="animal-avatar">🐱</div>
+            <div class="animal-info">
+                <div class="name">Luna 🟡 Nivel 2</div>
+                <div class="detail">Vómitos persistentes · Llegó hace 30 min</div>
+            </div>
+            <span class="badge-high">URGENTE</span>
+        </div>
+        <div class="animal-card">
+            <div class="animal-avatar">🐶</div>
+            <div class="animal-info">
+                <div class="name">Rocky 🟢 Nivel 3</div>
+                <div class="detail">Vacuna DHPP · Cita programada</div>
+            </div>
+            <span class="badge-low">NORMAL</span>
+        </div>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+    <div id="historial" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>Historial Médico</h1>
+            <span class="badge">Max</span>
+        </div>
+        <div class="content">
+            
+    <div class="card">
+        <h2>🐕 Max — Pastor Alemán (5 años)</h2>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+            <span class="tag">Vacunado ✓</span>
+            <span class="tag">Sterilizado</span>
+            <span class="tag">Alimento Royal Canin</span>
+        </div>
+    </div>
+    <div class="card">
+        <h2>📅 Citas pasadas</h2>
+        <div class="tl-item">
+            <div class="tl-time">15 ago 2025</div>
+            <div class="tl-title">Consulta por alergia de piel</div>
+            <div class="tl-title" style="font-size:12px;color:#6B7280;">Dr. Carlos López · Resultado: Tratamiento tópico recetado</div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-time">3 jul 2025</div>
+            <div class="tl-title">Cirugía de oído — Correctivo</div>
+            <div class="tl-title" style="font-size:12px;color:#6B7280;">Dr. Carlos López · Resultado: Exitosa · Revisión postoperatoria pendiente</div>
+        </div>
+        <div class="tl-item">
+            <div class="tl-time">20 may 2025</div>
+            <div class="tl-title">Vacuna DHPP — Refuerzo</div>
+            <div class="tl-title" style="font-size:12px;color:#6B7280;">Dra. Ana Martínez · Resultado: Aplicada sin complicaciones</div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>💊 Medicamentos activos</h2>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F1F5F9;">
+            <span>Antibiótico Amoxicilina 500mg</span>
+            <span style="font-size:12px;color:#6B7280;">Término: 15 ago</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+            <span>Crema dermatológica Betametasona</span>
+            <span style="font-size:12px;color:#6B7280;">Término: 30 ago</span>
+        </div>
+    </div>
+
+        </div>
+        <div class="bottomnav"><div class="nav-item " onclick="show('home')"><span class="icon">🏠</span><span>Inicio</span></div><div class="nav-item " onclick="show('citas')"><span class="icon">📋</span><span>Mis Citas</span></div><div class="nav-item " onclick="show('triaje')"><span class="icon">🏥</span><span>Triaje</span></div><div class="nav-item " onclick="show('tienda')"><span class="icon">🛒</span><span>Tienda</span></div><div class="nav-item " onclick="show('perfil')"><span class="icon">👤</span><span>Perfil</span></div></div>
+    </div>
+
+    <div id="flujos" class="page" style="display:none;">
+        <div class="topbar">
+            <span class="back" onclick="show('home')">‹</span>
+            <h1>🔀 Mapa de Flujos</h1>
+        </div>
+        <div class="content">
+            <div class="card">
+                <h2>🔄 Flujo Principal: Solicitud de Cita</h2>
+                <div class="flow">
+                    <div class="flow-step"><div class="step-num">1</div><div class="step-title">Splash / Login</div><div class="step-desc">Usuario inicia sesión o se registra</div></div>
+                    <div class="flow-step"><div class="step-num">2</div><div class="step-title">Home Dashboard</div><div class="step-desc">Vista general con citas, mascotas y acciones rápidas</div></div>
+                    <div class="flow-step"><div class="step-num">3</div><div class="step-title">Solicitar Cita → Paso 1: Tipo de servicio</div><div class="step-desc">Selección de consulta, vacunación, cirugía, etc.</div></div>
+                    <div class="flow-step"><div class="step-num">4</div><div class="step-title">Paso 2: Selección de mascota + fecha</div><div class="step-desc">Elige mascota, fecha y hora preferida</div></div>
+                    <div class="flow-step"><div class="step-num">5</div><div class="step-title">Paso 3: Confirmación</div><div class="step-desc">Resumen y envío de solicitud a la clínica</div></div>
+                    <div class="flow-step"><div class="step-num">6</div><div class="step-title">Notificación de confirmación</div><div class="step-desc">La clínica aprueba o reprograma</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🏥 Flujo: Triaje Digital (Tutor)</h2>
+                <div class="flow">
+                    <div class="flow-step"><div class="step-num">1</div><div class="step-title">Tutor escribe síntomas urgentes</div><div class="step-desc">Por WhatsApp o Chat dentro de la app</div></div>
+                    <div class="flow-step"><div class="step-num">2</div><div class="step-title">Bot aplica protocolo empático</div><div class="step-desc">Preguntas de descarte: respiración, consciencia, sangrado</div></div>
+                    <div class="flow-step"><div class="step-num">3</div><div class="step-title">Clasificación automática</div><div class="step-desc">Algoritmo → Semáforo de gravedad 🔴🟡🟢</div></div>
+                    <div class="flow-step"><div class="step-num">4a</div><div class="step-title">🟢 Nivel 3 → Agenda normal</div><div class="step-desc">Próximas horas disponibles</div></div>
+                    <div class="flow-step"><div class="step-num">4b</div><div class="step-title">🟡 Nivel 2 → Prioritaria 1-2h</div><div class="step-desc">Reorganiza cola, sin sala de espera</div></div>
+                    <div class="flow-step"><div class="step-num">4c</div><div class="step-title">🔴 Nivel 1 → Emergencia inmediata</div><div class="step-desc">Alerta médica, traslado ≤1 hora, box directo</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>📋 Flujo: Triaje en Recepción (Colaborador)</h2>
+                <div class="flow">
+                    <div class="flow-step"><div class="step-num">1</div><div class="step-title">Recepcionista abre formulario exprés</div><div class="step-desc">4 parámetros visibles en < 30 segundos</div></div>
+                    <div class="flow-step"><div class="step-num">2</div><div class="step-title">Evaluación: consciencia + respiración + mucosas + dolor</div><div class="step-desc">Íconos sencillos, sin texto largo</div></div>
+                    <div class="flow-step"><div class="step-num">3</div><div class="step-title">Categorización automática</div><div class="step-desc">Semáforo de gravedad con acciones inmediatas</div></div>
+                    <div class="flow-step"><div class="step-num">4</div><div class="step-title">Asignación de box y notificación al equipo médico</div><div class="step-desc">Flujo adaptado según nivel</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🛒 Flujo: E-Commerce</h2>
+                <div class="flow">
+                    <div class="flow-step"><div class="step-num">1</div><div class="step-title">Explorar tienda por categoría</div><div class="step-desc">Perros, gatos, alimentos, medicamentos</div></div>
+                    <div class="flow-step"><div class="step-num">2</div><div class="step-title">Agregar al carrito</div><div class="step-desc">Seleccionar cantidad y variante</div></div>
+                    <div class="flow-step"><div class="step-num">3</div><div class="step-title">Carrito → Finalizar compra</div><div class="step-desc">Seleccionar método de pago y dirección de entrega</div></div>
+                    <div class="flow-step"><div class="step-num">4</div><div class="step-title">Confirmación + seguimiento</div><div class="step-desc">Notificación de despacho y recepción</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>💬 Flujo: Comunidad</h2>
+                <div class="flow">
+                    <div class="flow-step"><div class="step-num">1</div><div class="step-title">Ver temas populares</div><div class="step-desc">Por categoría: salud, nutrición, razas</div></div>
+                    <div class="flow-step"><div class="step-num">2</div><div class="step-title">Leer / responder hilos</div><div class="step-desc">Interacción con otros tutores</div></div>
+                    <div class="flow-step"><div class="step-num">3</div><div class="step-title">Crear nuevo tema</div><div class="step-desc">Preguntar, compartir experiencia</div></div>
+                    <div class="flow-step"><div class="step-num">4</div><div class="step-title">Moderación + tips del equipo veterinario</div><div class="step-desc">Contenido validado por la clínica</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+// Init
+show('splash');
+</script>
+</body>
+</html>
