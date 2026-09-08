@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vet Active Pro — Hallazgos Principales de Diseño</title>
+  <meta name="description" content="Reporte ejecutivo de hallazgos de diseño, mitigación de sesgos algorítmicos y arquitectura de triaje para Vet Active Pro." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans (Títulos) & Inter (Cuerpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Dark Theme Palette (Default) */
+      --bg: #090d16;
+      --bg-gradient-1: rgba(16, 185, 129, 0.07);
+      --bg-gradient-2: rgba(16, 185, 129, 0.04);
+      --surface: #111827;
+      --surface-elevated: #162033;
+      --surface-subtle: #1a253c;
+      --header-bg: rgba(9, 13, 22, 0.85);
+      --border: #23304a;
+      --border-hover: #374766;
+      
+      /* Typography Colors */
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+
+      /* Green Accent System */
+      --accent: #10b981;
+      --accent-hover: #34d399;
+      --accent-subtle: rgba(16, 185, 129, 0.12);
+      --accent-border: rgba(16, 185, 129, 0.35);
+      --accent-glow: 0 0 25px rgba(16, 185, 129, 0.2);
+
+      /* Triage Levels (Dark Mode Calibrated) */
+      --danger: #f87171;
+      --danger-bg: rgba(239, 68, 68, 0.12);
+      --danger-border: rgba(239, 68, 68, 0.35);
+
+      --warning: #fbbf24;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --warning-border: rgba(245, 158, 11, 0.35);
+
+      --success: #34d399;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --success-border: rgba(16, 185, 129, 0.35);
+
+      /* Typography */
+      --font-title: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+      --card-shadow-hover: 0 14px 20px -3px rgba(0, 0, 0, 0.45), 0 6px 8px -4px rgba(0, 0, 0, 0.3);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+      --brand-gradient: linear-gradient(to right, #ffffff, #d1fae5);
+      --table-hover: rgba(26, 37, 60, 0.4);
+      --filter-active-color: #041f16;
+    }
+
+    /* Light Theme Palette */
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-gradient-1: rgba(16, 185, 129, 0.05);
+      --bg-gradient-2: rgba(2, 132, 199, 0.03);
+      --surface: #ffffff;
+      --surface-elevated: #f8fafc;
+      --surface-subtle: #f1f5f9;
+      --header-bg: rgba(255, 255, 255, 0.9);
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+
+      --accent: #059669;
+      --accent-hover: #047857;
+      --accent-subtle: rgba(16, 185, 129, 0.1);
+      --accent-border: rgba(16, 185, 129, 0.3);
+      --accent-glow: 0 0 20px rgba(16, 185, 129, 0.15);
+
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+
+      --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+      --card-shadow-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+      --brand-gradient: linear-gradient(to right, #0f172a, #065f46);
+      --table-hover: #f8fafc;
+      --filter-active-color: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 5rem;
+      background-image: 
+        radial-gradient(circle at 15% 10%, var(--bg-gradient-1) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, var(--bg-gradient-2) 0%, transparent 45%);
+      background-attachment: fixed;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Header & Navigation */
+    header {
+      background-color: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: var(--transition);
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-subtle), transparent);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      border-radius: 10px;
+      font-size: 1.15rem;
+      box-shadow: var(--accent-glow);
+    }
+
+    .brand-text {
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: var(--transition);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      list-style: none;
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+      background-color: var(--surface-subtle);
+      border-color: var(--border);
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-title);
+      font-size: 0.825rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--surface);
+      border-color: var(--accent-border);
+      color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-subtle);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle-btn .theme-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle-btn:active .theme-icon {
+      transform: rotate(30deg) scale(1.15);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 4.5rem 0 3rem 0;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background-color: var(--accent-subtle);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 0.825rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      margin-bottom: 1.35rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: var(--accent-glow);
+    }
+
+    .hero-title {
+      font-family: var(--font-title);
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--text-main);
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      max-width: 900px;
+    }
+
+    .hero-title .highlight-green {
+      background: linear-gradient(120deg, var(--accent-hover) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 820px;
+      font-weight: 400;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-subtle);
+      padding: 1.15rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .meta-item strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* KPI Highlights Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.35rem;
+      margin: 2.25rem 0 3.75rem 0;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 1.4rem;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-3px);
+      border-color: var(--accent-border);
+    }
+
+    .kpi-value {
+      font-family: var(--font-title);
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      line-height: 1;
+      margin-bottom: 0.55rem;
+      text-shadow: var(--accent-glow);
+    }
+
+    .kpi-label {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+
+    .kpi-detail {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 4rem;
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-tag {
+      font-family: var(--font-title);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.45rem;
+    }
+
+    .section-title {
+      font-family: var(--font-title);
+      font-size: clamp(1.85rem, 3.5vw, 2.35rem);
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 1.025rem;
+      margin-top: 0.45rem;
+      max-width: 800px;
+    }
+
+    /* Cards Generic */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+    }
+
+    /* Triage System Visualizer */
+    .triage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1.35rem;
+      margin-top: 1.25rem;
+    }
+
+    .triage-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.65rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .triage-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .triage-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .triage-card.level-1::before { background-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .triage-card.level-2::before { background-color: var(--warning); box-shadow: 0 0 10px var(--warning); }
+    .triage-card.level-3::before { background-color: var(--success); box-shadow: 0 0 10px var(--success); }
+
+    .triage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .triage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.75rem;
+      font-family: var(--font-title);
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+    .badge-success { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+
+    .triage-time {
+      font-family: var(--font-title);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: var(--surface-subtle);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .triage-title {
+      font-family: var(--font-title);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.65rem;
+      letter-spacing: -0.015em;
+    }
+
+    .triage-desc {
+      font-size: 0.925rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .triage-guardrail {
+      background-color: var(--surface-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      border-left: 3px solid var(--accent);
+    }
+
+    .triage-guardrail strong {
+      color: var(--text-main);
+    }
+
+    /* Bias Cases List */
+    .cases-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.35rem;
+    }
+
+    .case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--card-shadow);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .case-card:hover {
+      border-color: var(--border-hover);
+    }
+
+    @media (min-width: 880px) {
+      .case-card {
+        grid-template-columns: 340px 1fr;
+        gap: 2.25rem;
+      }
+    }
+
+    .case-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.95rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.35rem;
+    }
+
+    @media (min-width: 880px) {
+      .case-sidebar {
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+        padding-bottom: 0;
+        padding-right: 1.85rem;
+      }
+    }
+
+    .case-number {
+      font-family: var(--font-title);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    .case-title {
+      font-family: var(--font-title);
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .case-source {
+      font-size: 0.825rem;
+      color: var(--text-subtle);
+      line-height: 1.55;
+    }
+
+    .case-source a {
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+      transition: var(--transition);
+    }
+
+    .case-source a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    .case-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .case-block-title {
+      font-family: var(--font-title);
+      font-size: 0.825rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--accent);
+      margin-bottom: 0.45rem;
+    }
+
+    .case-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .impact-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 1.15rem 1.25rem;
+    }
+
+    .impact-box p {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Supplementary Findings */
+    .subfindings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.35rem;
+      margin-top: 1.75rem;
+    }
+
+    .subfinding-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    .subfinding-card:hover {
+      border-color: var(--border-hover);
+    }
+
+    .subfinding-tag {
+      font-family: var(--font-title);
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .subfinding-title {
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .subfinding-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Interactive Table & Controls */
+    .filter-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 1.35rem;
+    }
+
+    @media (min-width: 640px) {
+      .filter-wrapper {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .search-input {
+      padding: 0.65rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 360px;
+      outline: none;
+      transition: var(--transition);
+      background: var(--surface);
+      color: var(--text-main);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-subtle);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-subtle);
+    }
+
+    .filter-badge-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-title);
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+      background: var(--surface-subtle);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: var(--filter-active-color);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-subtle);
+    }
+
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: var(--surface-subtle);
+      color: var(--text-main);
+      font-family: var(--font-title);
+      font-weight: 700;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    td {
+      padding: 1.15rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--table-hover);
+    }
+
+    td strong {
+      color: var(--text-main);
+    }
+
+    .screen-tag {
+      display: inline-block;
+      padding: 0.25rem 0.55rem;
+      background: var(--surface-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      margin: 0.2rem 0.2rem 0.2rem 0;
+    }
+
+    /* Principles List */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.35rem;
+      margin-top: 1.25rem;
+    }
+
+    .principle-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .principle-item:hover {
+      border-color: var(--border-hover);
+    }
+
+    .principle-item h4 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      letter-spacing: -0.01em;
+    }
+
+    .principle-item p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* File Distribution Section */
+    .distribution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.35rem;
+    }
+
+    .progress-bar-container {
+      margin-top: 0.65rem;
+    }
+
+    .progress-track {
+      background-color: var(--surface-subtle);
+      border-radius: var(--radius-full);
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 0.45rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 10px var(--accent-subtle);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 5rem;
+      padding-top: 2.5rem;
+      color: var(--text-subtle);
+      font-size: 0.875rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media (min-width: 640px) {
+      footer {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+      }
+    }
+
+    footer strong {
+      color: var(--text-main);
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+        padding-bottom: 0;
+      }
+      header, .filter-wrapper, .search-input, .theme-toggle-btn {
+        display: none !important;
+      }
+      .card, .case-card, .triage-card, .meta-bar, .subfinding-card {
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+      }
+      .hero-title, .section-title, .case-title, .triage-title {
+        color: #000000 !important;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimalist Sticky Header -->
+  <header>
+    <div class="container nav-content">
+      <a href="#" class="brand" title="Vet Active Pro — Inicio">
+        <span class="brand-badge">🐾</span>
+        <span class="brand-text">Vet Active Pro</span>
+      </a>
+      
+      <div class="nav-right">
+        <nav aria-label="Navegación principal">
+          <ul class="nav-links">
+            <li><a href="#triaje">Triaje</a></li>
+            <li><a href="#sesgos">Sesgos</a></li>
+            <li><a href="#mitigaciones">Mitigaciones</a></li>
+            <li><a href="#estructura">Estructura</a></li>
+          </ul>
+        </nav>
+
+        <!-- Botón para alternar tema Claro / Oscuro -->
+        <button id="themeToggle" class="theme-toggle-btn" type="button" aria-label="Cambiar tema de color" title="Alternar entre modo claro y oscuro">
+          <span class="theme-icon">🌙</span>
+          <span class="theme-label">Oscuro</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Hero Section -->
+    <section class="hero">
+      <span class="badge-pill">Reporte Ejecutivo de Diseño · Diplomado AI</span>
+      <h1 class="hero-title">
+        Principales Hallazgos de <span class="highlight-green">Investigación & Diseño</span>
+      </h1>
+      <p class="hero-description">
+        Consolidado analítico sobre la mitigación de sesgos algorítmicos en el cuidado veterinario,
+        arquitectura del triaje digital semafórico e implicaciones directas para la experiencia de tutores y colaboradores clínicos.
+      </p>
+
+      <!-- Project Metadata -->
+      <div class="meta-bar">
+        <div class="meta-item">
+          <span>Proyecto:</span>
+          <strong>Vet Active Pro (App Móvil)</strong>
+        </div>
+        <div class="meta-item">
+          <span>Equipo:</span>
+          <strong>Hermes Grupo 2</strong>
+        </div>
+        <div class="meta-item">
+          <span>Período:</span>
+          <strong>Septiembre 2026</strong>
+        </div>
+        <div class="meta-item">
+          <span>Enfoque:</span>
+          <strong>Salud Digital & Ética en IA</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Stats / KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-value">3</div>
+        <div class="kpi-label">Casos Críticos de Sesgo</div>
+        <div class="kpi-detail">Evaluación de dolor, sobre-triaje LLM y speciesismo.</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-value">~60%</div>
+        <div class="kpi-label">Sobre-triaje de ChatGPT</div>
+        <div class="kpi-detail">Casos no urgentes clasificados erróneamente con alerta máxima.</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-value">6.4%</div>
+        <div class="kpi-label">Transparencia Comercial</div>
+        <div class="kpi-detail">Media de divulgación en 71 productos auditados en el mercado.</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-value">7</div>
+        <div class="kpi-label">Estrategias de Mitigación</div>
+        <div class="kpi-detail">Protocolos de diseño y validación asistida implementados.</div>
+      </div>
+    </div>
+
+    <!-- Section 1: Triaje & Resumen Ejecutivo -->
+    <section id="triaje">
+      <div class="section-header">
+        <span class="section-tag">01 / Arquitectura del Sistema</span>
+        <h2 class="section-title">Triaje Clínico Semafórico y Perfiles de Usuario</h2>
+        <p class="section-subtitle">Diseño de respuesta escalonada para tutores y colaboradores clínicos con calibración rigurosa de tiempos.</p>
+      </div>
+
+      <div class="triage-grid">
+        <!-- Nivel 1 -->
+        <div class="triage-card level-1">
+          <div class="triage-header">
+            <span class="triage-badge badge-danger">🔴 Nivel 1 — Crítico</span>
+            <span class="triage-time">≤ 1 hora</span>
+          </div>
+          <h3 class="triage-title">Atención de Emergencia Inmediata</h3>
+          <p class="triage-desc">
+            Riesgo vital o compromiso hemodinámico/respiratorio inminente. Activa alerta roja en recepción y notificación directa al veterinario en turno.
+          </p>
+          <div class="triage-guardrail">
+            <strong>Protección ética:</strong> Requiere validación humana obligatoria antes de movilización de quirófano para evitar falsas alarmas por sobre-triaje.
+          </div>
+        </div>
+
+        <!-- Nivel 2 -->
+        <div class="triage-card level-2">
+          <div class="triage-header">
+            <span class="triage-badge badge-warning">🟡 Nivel 2 — Prioritario</span>
+            <span class="triage-time">1 – 2 horas</span>
+          </div>
+          <h3 class="triage-title">Urgencia Relativa Asistida</h3>
+          <p class="triage-desc">
+            Condiciones de dolor moderado, traumatismos no hemorrágicos o descompensaciones metabólicas con monitorización activa.
+          </p>
+          <div class="triage-guardrail">
+            <strong>Protección ética:</strong> Escalamiento asistido por bot de recepción sin condicionamiento de raza o peso en la ponderación.
+          </div>
+        </div>
+
+        <!-- Nivel 3 -->
+        <div class="triage-card level-3">
+          <div class="triage-header">
+            <span class="triage-badge badge-success">🟢 Nivel 3 — Normal</span>
+            <span class="triage-time">Atención estándar</span>
+          </div>
+          <h3 class="triage-title">Consulta de Rutina o Preventiva</h3>
+          <p class="triage-desc">
+            Controles sanitarios, vacunaciones, desparasitaciones y dudas conductuales sin signos agudos ni descompensación visible.
+          </p>
+          <div class="triage-guardrail">
+            <strong>Protección ética:</strong> Disclaimer transparente de que el resultado es orientativo, ofreciendo siempre canal de consulta directa.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Hallazgos de Investigación (Sesgos) -->
+    <section id="sesgos">
+      <div class="section-header">
+        <span class="section-tag">02 / Evidencia Científica 2024–2026</span>
+        <h2 class="section-title">Los 3 Casos Principales de Sesgo en IA Veterinaria</h2>
+        <p class="section-subtitle">Investigación retrospectiva y experimental que fundamenta las decisiones de diseño del producto.</p>
+      </div>
+
+      <div class="cases-list">
+        
+        <!-- Caso 1 -->
+        <article class="case-card">
+          <div class="case-sidebar">
+            <span class="case-number">Caso 01 · Estudio Clínico</span>
+            <h3 class="case-title">Sesgo de raza en la evaluación del dolor canino</h3>
+            <div class="case-source">
+              <strong>Fuente:</strong> Frontiers in Pain Research (2025)<br />
+              <strong>Autores:</strong> Caddiell RMP et al.<br />
+              <strong>DOI:</strong> <a href="https://doi.org/10.3389/fpain.2025.1589082" target="_blank" rel="noopener noreferrer">10.3389/fpain.2025.1589082</a>
+            </div>
+          </div>
+          <div class="case-body">
+            <div>
+              <div class="case-block-title">Hallazgo Experimental (3,744 pacientes / 69 razas)</div>
+              <p class="case-desc">
+                Los veterinarios asignaron puntuaciones de dolor y planes de analgesia fuertemente sesgados por raza y no por la severidad real:
+                Golden Retrievers, Boxers y Dobermans recibieron puntuaciones sistemáticamente más bajas y menos analgesia; Chihuahuas y Teckels
+                recibieron puntuaciones desproporcionadamente más altas (p = 8.01×10⁻³ para dolor; p = 3.66×10⁻³ para analgesia).
+              </p>
+            </div>
+            <div class="impact-box">
+              <div class="case-block-title">Implicación de Diseño para Vet Active Pro</div>
+              <p>
+                <strong>La raza queda excluida del algoritmo de decisión:</strong> Un modelo entrenado con historias clínicas pasadas aprendería
+                y perpetuaría estas omisiones analgésicas. La app evalúa el dolor mediante <em>signos fisiológicos observables</em> (respiración, postura, vocalización).
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Caso 2 -->
+        <article class="case-card">
+          <div class="case-sidebar">
+            <span class="case-number">Caso 02 · Modelos LLM</span>
+            <h3 class="case-title">Sobre-triaje masivo de ChatGPT en emergencias</h3>
+            <div class="case-source">
+              <strong>Fuente:</strong> Veterinary Record (2026)<br />
+              <strong>Autores:</strong> Wong A et al.<br />
+              <strong>DOI:</strong> <a href="https://doi.org/10.1002/vetr.6126" target="_blank" rel="noopener noreferrer">10.1002/vetr.6126</a>
+            </div>
+          </div>
+          <div class="case-body">
+            <div>
+              <div class="case-block-title">Hallazgo Experimental (ChatGPT-3.5 vs ChatGPT-4.0 vs Personal)</div>
+              <p class="case-desc">
+                Aunque los modelos detectan un 83–93% de las emergencias reales, <strong>clasificaron erróneamente un ~60% de casos no urgentes como urgencias máximas</strong>.
+                La precisión global del triaje automatizado cayó por debajo del 50%. Este sobre-triaje colapsa las salas de urgencias y genera fatiga de alarma en el equipo clínico.
+              </p>
+            </div>
+            <div class="impact-box">
+              <div class="case-block-title">Implicación de Diseño para Vet Active Pro</div>
+              <p>
+                <strong>Prohibición de LLMs generalistas sin calibración:</strong> No se utiliza un chatbot convencional para clasificar niveles.
+                Se emplea un flujo de doble filtro: extracción paramétrica de síntomas + umbrales clínicos calibrados + confirmación asistida.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Caso 3 -->
+        <article class="case-card">
+          <div class="case-sidebar">
+            <span class="case-number">Caso 03 · Ética & Visión Computacional</span>
+            <h3 class="case-title">Especiesismo algorítmico y minimización de síntomas</h3>
+            <div class="case-source">
+              <strong>Fuente:</strong> AI and Ethics, Springer Nature (2022 / 2026)<br />
+              <strong>Autores:</strong> Hagendorff et al.<br />
+              <strong>DOI:</strong> <a href="https://link.springer.com/article/10.1007/s43681-022-00199-9" target="_blank" rel="noopener noreferrer">10.1007/s43681-022-00199-9</a>
+            </div>
+          </div>
+          <div class="case-body">
+            <div>
+              <div class="case-block-title">Hallazgo de Discriminación Especiesista en IA</div>
+              <p class="case-desc">
+                Análisis sistemático de modelos fundacionales de visión y texto donde el dolor y las condiciones críticas de animales domésticos
+                son minimizadas conceptualmente frente a entidades humanas, catalogando signos clínicos severos como "conductas habituales de mamíferos menores".
+              </p>
+            </div>
+            <div class="impact-box">
+              <div class="case-block-title">Implicación de Diseño para Vet Active Pro</div>
+              <p>
+                <strong>Alineación veterinaria estricta:</strong> Todo modelo conversacional (WhatsApp/Chat) debe ajustarse con taxonomías médicas veterinarias
+                y contar con <em>umbral de escepticismo bajo</em>: ante la duda, el sistema deriva a un colaborador humano.
+              </p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Hallazgos Adicionales -->
+      <div class="subfindings-grid">
+        <div class="subfinding-card">
+          <span class="subfinding-tag">Auditoría Comercial (Frontiers 2026)</span>
+          <h4 class="subfinding-title">Brecha Crítica de Transparencia (Audit 71 Apps)</h4>
+          <p class="subfinding-text">
+            El 63.3% de las herramientas de IA veterinaria comercial no divulga métricas de validación clínica, y el 0% reporta intervalos de confianza.
+            Vet Active Pro adopta un estándar de <strong>auditoría abierta y explicabilidad directa</strong> de los síntomas ponderados.
+          </p>
+        </div>
+
+        <div class="subfinding-card">
+          <span class="subfinding-tag">Diagnóstico Diferencial (PMC 2024)</span>
+          <h4 class="subfinding-title">Riesgo de "Falsa Tranquilidad" en Tutores</h4>
+          <p class="subfinding-text">
+            Los modelos comerciales fallaron en el 61% de los diagnósticos definitivos y tendieron a sugerir "esto puede esperar" a animales con abdomen agudo.
+            Vet Active Pro prohíbe terminantemente el uso de la app como emisor de diagnósticos conclusivos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Matriz de Riesgos y Mitigaciones -->
+    <section id="mitigaciones">
+      <div class="section-header">
+        <span class="section-tag">03 / Respuestas Operativas</span>
+        <h2 class="section-title">Matriz de Mitigaciones en la Experiencia de Usuario</h2>
+        <p class="section-subtitle">Mapeo directo de riesgos éticos y técnicos hacia componentes y pantallas específicas de la app.</p>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="filter-wrapper">
+        <input 
+          type="text" 
+          id="riskSearch" 
+          class="search-input" 
+          placeholder="Buscar riesgo, pantalla o mitigación..." 
+          aria-label="Buscar en la matriz de mitigaciones"
+        />
+        <div class="filter-badge-group">
+          <button class="filter-btn active" data-filter="all">Todos (7)</button>
+          <button class="filter-btn" data-filter="Triaje">Triaje</button>
+          <button class="filter-btn" data-filter="Alerta">Alertas</button>
+          <button class="filter-btn" data-filter="Chat">Chat / WhatsApp</button>
+        </div>
+      </div>
+
+      <!-- Interactive Table -->
+      <div class="table-container">
+        <table id="mitigationsTable">
+          <thead>
+            <tr>
+              <th style="width: 45px;">#</th>
+              <th>Riesgo Detectado</th>
+              <th>Origen / Evidencia</th>
+              <th>Pantalla Afectada</th>
+              <th>Mitigación Implementada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-category="Triaje">
+              <td><strong>1</strong></td>
+              <td><strong>Sesgo de raza en evaluación de dolor</strong></td>
+              <td>Caso 1 (Frontiers 2025)</td>
+              <td>
+                <span class="screen-tag">Triaje Digital</span>
+                <span class="screen-tag">Triaje Resultado</span>
+              </td>
+              <td>Evaluación exclusivamente sobre <strong>síntomas observables</strong> (respiración, mucosas, consciencia), omitiendo la raza como variable predictiva de dolor.</td>
+            </tr>
+            <tr data-category="Triaje Alerta">
+              <td><strong>2</strong></td>
+              <td><strong>Sobre-triaje de LLMs en urgencias</strong></td>
+              <td>Caso 2 (Vet Record 2026)</td>
+              <td>
+                <span class="screen-tag">Triaje Digital</span>
+                <span class="screen-tag">Alerta Emergencia N1</span>
+              </td>
+              <td><strong>Calibración de umbrales clínicos:</strong> No delegar triaje a LLM general. Validación obligatoria por veterinario humano en alertas Nivel 1.</td>
+            </tr>
+            <tr data-category="Chat">
+              <td><strong>3</strong></td>
+              <td><strong>Subestimación de gravedad (speciesismo)</strong></td>
+              <td>Caso 3 (Hagendorff et al.)</td>
+              <td>
+                <span class="screen-tag">Triaje Digital (Chat/WhatsApp)</span>
+              </td>
+              <td><strong>Human-in-the-loop:</strong> Toda clasificación efectuada por el bot de mensajería debe ser aprobada en tiempo real por el equipo clínico antes de responder.</td>
+            </tr>
+            <tr data-category="Triaje Alerta">
+              <td><strong>4</strong></td>
+              <td><strong>Diagnósticos incorrectos emitidos por IA</strong></td>
+              <td>PMC 2024</td>
+              <td>
+                <span class="screen-tag">Triaje Digital</span>
+                <span class="screen-tag">Alerta Emergencia N1</span>
+              </td>
+              <td>La IA solo prioriza tiempos de espera; se prohíbe emitir etiquetas de diagnóstico final en la interfaz del tutor.</td>
+            </tr>
+            <tr data-category="Triaje">
+              <td><strong>5</strong></td>
+              <td><strong>Falsas tranquilizaciones a los tutores</strong></td>
+              <td>PMC 2024</td>
+              <td>
+                <span class="screen-tag">Triaje Resultado</span>
+                <span class="screen-tag">Alerta Emergencia</span>
+              </td>
+              <td>El semáforo 🔴/🟡/🟢 es <strong>indicativo y no conclusivo</strong>; se adjunta advertencia permanente y botón de llamada veterinaria inmediata.</td>
+            </tr>
+            <tr data-category="Triaje">
+              <td><strong>6</strong></td>
+              <td><strong>Datos de entrenamiento desbalanceados</strong></td>
+              <td>Casos 2 y 3</td>
+              <td>
+                <span class="screen-tag">Todas las pantallas IA</span>
+              </td>
+              <td>Incorporación de auditorías periódicas de paridad demográfica y representatividad de razas toy/miniatura en los modelos.</td>
+            </tr>
+            <tr data-category="Triaje Alerta Chat">
+              <td><strong>7</strong></td>
+              <td><strong>Opacidad y falta de transparencia</strong></td>
+              <td>Brundage (Frontiers 2026)</td>
+              <td>
+                <span class="screen-tag">General del Sistema</span>
+              </td>
+              <td>Desglose explicable de factores evaluados presentado en el resumen del tutor, con reporte de márgenes de confianza y revisión externa.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Principles -->
+      <div class="principles-grid">
+        <div class="principle-item">
+          <h4>🔒 Raza como Contexto, No como Regla</h4>
+          <p>La raza se almacena en el expediente para referencia biológica (ej. predisposiciones cardíacas), pero está desvinculada del motor de scoring de urgencia.</p>
+        </div>
+        <div class="principle-item">
+          <h4>⚖️ Equidad Multitalla en Alertas</h4>
+          <p>La sensibilidad de los umbrales de dolor y pulso se pondera por rangos fisiológicos universales, garantizando igual prioridad para razas miniaturas.</p>
+        </div>
+        <div class="principle-item">
+          <h4>🛡️ Protocolo Human-in-the-Loop</h4>
+          <p>Ninguna decisión de alta, cambio de medicación o descarte de emergencia se toma sin la firma y revisión de un colaborador veterinario acreditado.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Arquitectura y Clasificación de Archivos -->
+    <section id="estructura">
+      <div class="section-header">
+        <span class="section-tag">04 / Repositorio y Recursos</span>
+        <h2 class="section-title">Distribución y Clasificación del Proyecto</h2>
+        <p class="section-subtitle">Organización de código, wireframes interactivos, datos de investigación y documentación consolidada.</p>
+      </div>
+
+      <div class="distribution-grid">
+        <!-- Frontend -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-family: var(--font-title); font-size: 1.05rem;">🎨 Frontend & Wireframes</strong>
+            <span style="font-weight: 700; font-size: 0.875rem; color: var(--accent);">~30% (66.4 KB)</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-track"><div class="progress-fill" style="width: 30%;"></div></div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem;">
+            Prototipo interactivo en HTML/CSS/JS con 21 pantallas completas, cubriendo flujos de tutores y colaboradores clínicos.
+          </p>
+        </div>
+
+        <!-- Scripts -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-family: var(--font-title); font-size: 1.05rem;">🔧 Scripts & Herramientas</strong>
+            <span style="font-weight: 700; font-size: 0.875rem; color: var(--accent);">~28% (61.8 KB)</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-track"><div class="progress-fill" style="width: 28%;"></div></div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem;">
+            Scripts automatizados en Python para compilación modular y renderizado interactivo de interfaces.
+          </p>
+        </div>
+
+        <!-- Documentación -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-family: var(--font-title); font-size: 1.05rem;">📋 Documentación Markdown</strong>
+            <span style="font-weight: 700; font-size: 0.875rem; color: var(--accent);">~9% (19.2 KB)</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-track"><div class="progress-fill" style="width: 9%;"></div></div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem;">
+            Reportes especializados de sesgo algorítmico, clasificación de entregables y mini-reporte consolidado.
+          </p>
+        </div>
+
+        <!-- Investigación JSON -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-family: var(--font-title); font-size: 1.05rem;">🔍 Datos de Investigación</strong>
+            <span style="font-weight: 700; font-size: 0.875rem; color: var(--accent);">~38% (84.0 KB)</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-track"><div class="progress-fill" style="width: 38%;"></div></div>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.6rem;">
+            7 conjuntos de datos JSON con artículos científicos extraídos y resultados de auditoría de sesgo.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>
+        <strong>Vet Active Pro</strong> — Proyecto de Diseño & Inteligencia Artificial
+      </div>
+      <div>
+        Hermes Grupo 2 · Diplomado AI · Septiembre 2026
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Script for Table Filtering, Search & Theme Toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Theme Toggle Logic
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = themeToggle ? themeToggle.querySelector('.theme-icon') : null;
+      const themeLabel = themeToggle ? themeToggle.querySelector('.theme-label') : null;
+
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+          if (themeIcon) themeIcon.textContent = '☀️';
+          if (themeLabel) themeLabel.textContent = 'Claro';
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+          if (themeIcon) themeIcon.textContent = '🌙';
+          if (themeLabel) themeLabel.textContent = 'Oscuro';
+        }
+      }
+
+      // Check saved preference or default to dark
+      const savedTheme = localStorage.getItem('vet_active_theme') || 'dark';
+      applyTheme(savedTheme);
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const isCurrentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
+          const nextTheme = isCurrentlyLight ? 'dark' : 'light';
+          applyTheme(nextTheme);
+          localStorage.setItem('vet_active_theme', nextTheme);
+        });
+      }
+
+      // 2. Table Filtering & Search
+      const searchInput = document.getElementById('riskSearch');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const tableRows = document.querySelectorAll('#mitigationsTable tbody tr');
+
+      let currentCategory = 'all';
+
+      function filterTable() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        tableRows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const category = row.getAttribute('data-category') || '';
+
+          const matchesQuery = query === '' || text.includes(query);
+          const matchesCategory = currentCategory === 'all' || category.toLowerCase().includes(currentCategory.toLowerCase());
+
+          if (matchesQuery && matchesCategory) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+      }
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.getAttribute('data-filter') || 'all';
+          filterTable();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
