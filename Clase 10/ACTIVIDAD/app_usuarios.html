@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Vet Active Pro — App de Tutores</title>
+  <meta name="description" content="Aplicación móvil para tutores de mascotas de la clínica veterinaria Vet Active Pro. Triaje digital ético, citas, chat veterinario y carnet de salud." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Dark Theme (Default) */
+      --bg: #090d16;
+      --app-bg: #0d1322;
+      --surface: #141c2e;
+      --surface-elevated: #1b263e;
+      --surface-subtle: #212e4a;
+      --border: #263553;
+      --border-subtle: #1c273d;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+
+      /* Green Brand Accent */
+      --accent: #10b981;
+      --accent-hover: #34d399;
+      --accent-subtle: rgba(16, 185, 129, 0.14);
+      --accent-border: rgba(16, 185, 129, 0.35);
+      --accent-glow: 0 0 20px rgba(16, 185, 129, 0.25);
+
+      /* Triage Colors */
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.14);
+      --danger-border: rgba(239, 68, 68, 0.35);
+
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.14);
+      --warning-border: rgba(245, 158, 11, 0.35);
+
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.14);
+      --success-border: rgba(16, 185, 129, 0.35);
+
+      /* Fonts */
+      --font-title: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.35);
+      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="light"] {
+      --bg: #e2e8f0;
+      --app-bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --surface-subtle: #e2e8f0;
+      --border: #cbd5e1;
+      --border-subtle: #e2e8f0;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+
+      --accent: #059669;
+      --accent-hover: #047857;
+      --accent-subtle: rgba(16, 185, 129, 0.12);
+      --accent-border: rgba(16, 185, 129, 0.3);
+      --accent-glow: 0 0 15px rgba(16, 185, 129, 0.15);
+
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+
+      --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Outer Wrapper for Phone Frame */
+    .device-container {
+      width: 100%;
+      max-width: 430px;
+      height: 900px;
+      max-height: 96vh;
+      background: var(--app-bg);
+      border-radius: 46px;
+      border: 8px solid #1f293d;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 460px) {
+      body {
+        padding: 0;
+      }
+      .device-container {
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+      }
+    }
+
+    /* Phone Notch / Island */
+    .status-bar {
+      height: 44px;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      z-index: 40;
+      background-color: var(--app-bg);
+      flex-shrink: 0;
+    }
+
+    .phone-notch {
+      width: 120px;
+      height: 22px;
+      background: #000000;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .notch-camera {
+      width: 9px;
+      height: 9px;
+      background: #111b2b;
+      border-radius: 50%;
+    }
+
+    /* App Top Bar */
+    .app-header {
+      padding: 0.5rem 1.25rem 0.85rem 1.25rem;
+      background: var(--app-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #0284c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 0.95rem;
+      box-shadow: 0 0 12px var(--accent-subtle);
+      border: 2px solid var(--border);
+    }
+
+    .user-info h2 {
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .user-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Main Scrollable Screen Viewport */
+    .screen-viewport {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1.15rem;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    .screen-viewport::-webkit-scrollbar {
+      width: 4px;
+    }
+    .screen-viewport::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .screen-content {
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .screen-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Reusable Cards & Elements */
+    .banner-emergency {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.16), rgba(220, 38, 38, 0.05));
+      border: 1px solid var(--danger-border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.12);
+    }
+
+    .banner-text h3 {
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: 0.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .banner-text p {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+
+    .btn-emergency {
+      background: var(--danger);
+      color: #ffffff;
+      border: none;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-title);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+      transition: var(--transition);
+    }
+
+    .btn-emergency:hover {
+      opacity: 0.92;
+      transform: scale(1.02);
+    }
+
+    /* Section Headings inside Phone */
+    .app-section-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 1.25rem 0 0.85rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .app-section-title a {
+      font-size: 0.78rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Pet Cards Horizontal Scroller */
+    .pets-scroll {
+      display: flex;
+      gap: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .pets-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pet-card {
+      flex: 0 0 160px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .pet-card.active, .pet-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px var(--accent-subtle);
+    }
+
+    .pet-card-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--surface-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 0.65rem;
+      border: 2px solid var(--border);
+    }
+
+    .pet-name {
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .pet-breed {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pet-chip {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-full);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+
+    .add-pet-card {
+      flex: 0 0 120px;
+      background: transparent;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      color: var(--text-subtle);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .add-pet-card:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Action Grid */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .action-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .action-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .action-card h4 {
+      font-family: var(--font-title);
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .action-card p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Appointment Card */
+    .appointment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      border-left: 4px solid var(--accent);
+    }
+
+    .app-date-badge {
+      background: var(--surface-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      min-width: 58px;
+    }
+
+    .app-date-day {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .app-date-month {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .appointment-info h4 {
+      font-family: var(--font-title);
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.15rem;
+    }
+
+    .appointment-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================================
+       TRIAGE STEPPER SCREEN
+       ========================================= */
+    .triage-intro {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .triage-intro h3 {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .triage-intro p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .triage-step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-question {
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-question-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #041f16;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      cursor: pointer;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .option-item:hover {
+      border-color: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .option-item.selected {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .option-radio {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin-right: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .option-item.selected .option-radio {
+      border-color: var(--accent);
+    }
+
+    .option-item.selected .option-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .btn-submit-triage {
+      width: 100%;
+      padding: 0.9rem;
+      border-radius: var(--radius-md);
+      background: var(--accent);
+      color: #041f16;
+      border: none;
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+      box-shadow: 0 0 15px var(--accent-subtle);
+      transition: var(--transition);
+    }
+
+    .btn-submit-triage:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Result Card (Interactive output) */
+    .triage-result-box {
+      display: none;
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      margin-top: 1.25rem;
+      border: 1px solid var(--border);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-title);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .result-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-desc {
+      font-size: 0.825rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .result-guardrails {
+      background: var(--surface-subtle);
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-left: 3px solid var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    /* =========================================
+       CHAT SCREEN (HUMAN IN THE LOOP)
+       ========================================= */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .chat-disclaimer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.725rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .chat-bubble {
+      max-width: 82%;
+      padding: 0.75rem 0.95rem;
+      border-radius: 16px;
+      font-size: 0.825rem;
+      line-height: 1.45;
+      position: relative;
+    }
+
+    .chat-bot {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-bot-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chat-user {
+      align-self: flex-end;
+      background: var(--accent);
+      color: #041f16;
+      font-weight: 500;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 8px var(--accent-subtle);
+    }
+
+    .chat-input-bar {
+      display: flex;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+      margin-top: auto;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.65rem 1rem;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent);
+    }
+
+    .chat-send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #041f16;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Bottom Navigation Tab Bar */
+    .app-bottom-nav {
+      height: 72px;
+      background: var(--surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 0.5rem;
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-subtle);
+      cursor: pointer;
+      font-family: var(--font-title);
+      font-size: 0.72rem;
+      font-weight: 600;
+      transition: var(--transition);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .nav-tab:hover {
+      color: var(--text-main);
+    }
+
+    .nav-tab.active {
+      color: var(--accent);
+    }
+
+    .nav-tab-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-tab.active .nav-tab-icon {
+      transform: translateY(-2px) scale(1.1);
+    }
+
+    /* Back Link */
+    .desktop-notice {
+      position: absolute;
+      bottom: -35px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+    }
+
+    .desktop-notice a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Smart Phone Device Wrapper -->
+  <div class="device-container">
+    
+    <!-- Phone Status Bar -->
+    <div class="status-bar">
+      <span id="currentTime">09:41</span>
+      <div class="phone-notch">
+        <div class="notch-camera"></div>
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <header class="app-header">
+      <div class="header-user">
+        <div class="user-avatar">TG</div>
+        <div class="user-info">
+          <h2 id="viewTitle">Vet Active Pro</h2>
+          <p>Tutor: Tomás González</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Alternar tema -->
+        <button id="themeToggleBtn" class="icon-btn" title="Cambiar tema">🌙</button>
+        <!-- Notificaciones -->
+        <button class="icon-btn" title="Notificaciones" onclick="alert('No hay notificaciones pendientes.')">🔔</button>
+      </div>
+    </header>
+
+    <!-- Main Viewport (Screen Content) -->
+    <main class="screen-viewport">
+
+      <!-- ==============================================
+           SCREEN 1: INICIO (HOME)
+           ============================================== -->
+      <div id="screen-home" class="screen-content active">
+        
+        <!-- Emergency Triage Banner -->
+        <div class="banner-emergency">
+          <div class="banner-text">
+            <h3>🚨 ¿Es una urgencia?</h3>
+            <p>Triaje digital con evaluación sin sesgo de raza</p>
+          </div>
+          <button class="btn-emergency" onclick="switchTab('triaje')">
+            Evaluar Ya ➔
+          </button>
+        </div>
+
+        <!-- Mis Mascotas Carousel -->
+        <div class="app-section-title">
+          <span>Mis Mascotas</span>
+          <a href="#" onclick="switchTab('mascotas')">Ver todas (2)</a>
+        </div>
+
+        <div class="pets-scroll">
+          <div class="pet-card active" onclick="switchTab('mascotas')">
+            <div class="pet-card-avatar">🐕</div>
+            <div class="pet-name">Luna</div>
+            <div class="pet-breed">Golden Retriever · 4 años</div>
+            <span class="pet-chip">Vacunas al día</span>
+          </div>
+
+          <div class="pet-card" onclick="switchTab('mascotas')">
+            <div class="pet-card-avatar">🐶</div>
+            <div class="pet-name">Milo</div>
+            <div class="pet-breed">Chihuahua · 2 años</div>
+            <span class="pet-chip" style="background: var(--warning-bg); color: var(--warning);">Control pendiente</span>
+          </div>
+
+          <div class="add-pet-card" onclick="alert('Función de agregar mascota: abre formulario para registrar una nueva mascota.')">
+            <span style="font-size: 1.3rem;">＋</span>
+            <span>Nueva</span>
+          </div>
+        </div>
+
+        <!-- Accesos Rápidos -->
+        <div class="app-section-title">
+          <span>Servicios Rápidos</span>
+        </div>
+
+        <div class="action-grid">
+          <div class="action-card" onclick="switchTab('triaje')">
+            <div class="action-icon">🩺</div>
+            <h4>Triaje Clínico</h4>
+            <p>Clasificación en 🔴🟡🟢 según síntomas observados.</p>
+          </div>
+
+          <div class="action-card" onclick="switchTab('chat')">
+            <div class="action-icon">💬</div>
+            <h4>Chat Veterinario</h4>
+            <p>Asistente supervisado por veterinarios reales.</p>
+          </div>
+
+          <div class="action-card" onclick="switchTab('citas')">
+            <div class="action-icon">📅</div>
+            <h4>Agendar Cita</h4>
+            <p>Reserva hora para chequeos, vacunas y controles.</p>
+          </div>
+
+          <div class="action-card" onclick="switchTab('mascotas')">
+            <div class="action-icon">📋</div>
+            <h4>Carnet de Salud</h4>
+            <p>Historial médico, desparasitación y peso.</p>
+          </div>
+        </div>
+
+        <!-- Próxima Cita -->
+        <div class="app-section-title">
+          <span>Próxima Cita Programada</span>
+        </div>
+
+        <div class="appointment-card">
+          <div class="app-date-badge">
+            <div class="app-date-day">14</div>
+            <div class="app-date-month">Sep</div>
+          </div>
+          <div class="appointment-info">
+            <h4>Control y Vacuna Séxtuple</h4>
+            <p>🐕 Luna · Dr. Andrés Valenzuela</p>
+            <p style="color: var(--accent); font-weight: 600; font-size: 0.72rem; margin-top: 0.2rem;">⏰ 10:30 AM · Sucursal Central</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================
+           SCREEN 2: TRIAJE DIGITAL (SÍNTOMAS OBSERVABLES)
+           ============================================== -->
+      <div id="screen-triaje" class="screen-content">
+        
+        <div class="triage-intro">
+          <h3>🩺 Triaje Digital Calibrado</h3>
+          <p>
+            Evaluación orientativa basada en <strong>signos fisiológicos y observables</strong>. 
+            No utilizamos la raza de tu mascota para priorizar el dolor, garantizando un triaje ético e imparcial.
+          </p>
+        </div>
+
+        <!-- Paso 1: Respiración -->
+        <div class="triage-step-card">
+          <div class="step-question">
+            <span class="step-question-number">1</span>
+            <span>Patrón respiratorio observable</span>
+          </div>
+          <div class="option-list">
+            <div class="option-item" onclick="selectOption(this, 'resp', 'grave')">
+              <span class="option-radio"></span>
+              <span>Dificultad severa / Respira con el abdomen o cuello estirado</span>
+            </div>
+            <div class="option-item" onclick="selectOption(this, 'resp', 'moderado')">
+              <span class="option-radio"></span>
+              <span>Respiración agitada pero sin ahogo visible</span>
+            </div>
+            <div class="option-item selected" onclick="selectOption(this, 'resp', 'normal')">
+              <span class="option-radio"></span>
+              <span>Respiración tranquila y normal en reposo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Estado de alerta / consciencia -->
+        <div class="triage-step-card">
+          <div class="step-question">
+            <span class="step-question-number">2</span>
+            <span>Nivel de respuesta y consciencia</span>
+          </div>
+          <div class="option-list">
+            <div class="option-item" onclick="selectOption(this, 'consciencia', 'grave')">
+              <span class="option-radio"></span>
+              <span>Inconsciente / No reacciona a su nombre o estímulos</span>
+            </div>
+            <div class="option-item" onclick="selectOption(this, 'consciencia', 'moderado')">
+              <span class="option-radio"></span>
+              <span>Decaído, débil o con marcha tambaleante</span>
+            </div>
+            <div class="option-item selected" onclick="selectOption(this, 'consciencia', 'normal')">
+              <span class="option-radio"></span>
+              <span>Alerta, responde con normalidad a estímulos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 3: Mucosas y dolor -->
+        <div class="triage-step-card">
+          <div class="step-question">
+            <span class="step-question-number">3</span>
+            <span>Color de encías o dolor manifiesto</span>
+          </div>
+          <div class="option-list">
+            <div class="option-item" onclick="selectOption(this, 'dolor', 'grave')">
+              <span class="option-radio"></span>
+              <span>Encías blancas/azuladas o llanto de dolor continuo e intenso</span>
+            </div>
+            <div class="option-item" onclick="selectOption(this, 'dolor', 'moderado')">
+              <span class="option-radio"></span>
+              <span>Encías pálidas o quejas al palpar abdomen/extremidad</span>
+            </div>
+            <div class="option-item selected" onclick="selectOption(this, 'dolor', 'normal')">
+              <span class="option-radio"></span>
+              <span>Encías rosadas normales / Sin signos evidentes de dolor</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-submit-triage" onclick="evaluateTriage()">
+          <span>Calcular Nivel de Triaje</span> ➔
+        </button>
+
+        <!-- Dynamic Output Box -->
+        <div id="triageResult" class="triage-result-box">
+          <span id="resBadge" class="result-badge">🔴 Nivel 1 — Crítico</span>
+          <h4 id="resTitle" class="result-title">Atención de Emergencia Inmediata</h4>
+          <p id="resDesc" class="result-desc"></p>
+          <div class="result-guardrails">
+            <strong>⚠️ Nota Ética y de Seguridad:</strong> Este resultado es orientativo y no reemplaza el examen clínico veterinario presencial. Ante cualquier duda, pulsa el botón de llamada o acude a urgencias.
+          </div>
+          <button id="resActionBtn" class="btn-emergency" style="width: 100%; justify-content: center; padding: 0.85rem;" onclick="alert('Conectando directamente con la central de urgencias veterinarias de Vet Active Pro...')">
+            📞 Llamar a Urgencias (24/7)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ==============================================
+           SCREEN 3: CHAT VETERINARIO (HUMAN IN THE LOOP)
+           ============================================== -->
+      <div id="screen-chat" class="screen-content">
+        
+        <div class="chat-container">
+          <div class="chat-disclaimer">
+            🤖 <strong>Asistente Clínico Vet Active Pro:</strong> Conversaciones supervisadas con protocolo <em>human-in-the-loop</em>. No emitimos diagnósticos definitivos automáticos.
+          </div>
+
+          <div id="chatMessages" class="chat-messages">
+            <div class="chat-bubble chat-bot">
+              <span class="chat-bot-badge">VetBot · Asistente Clínico</span>
+              Hola Tomás. Soy el asistente de Vet Active Pro. Cuéntame qué síntomas has observado en <strong>Luna</strong> o <strong>Milo</strong> para orientarte.
+            </div>
+
+            <div class="chat-bubble chat-user">
+              Hola, Luna vomitó una vez en la mañana pero está con energía y bebiendo agua. ¿Debería preocuparme?
+            </div>
+
+            <div class="chat-bubble chat-bot">
+              <span class="chat-bot-badge">VetBot · Asistente Clínico</span>
+              Gracias por detallarlo. Si fue un episodio único, mantiene su vitalidad y sus encías están rosadas, usualmente se clasifica como <strong>🟢 Nivel 3 (Monitoreo Preventivo)</strong>. 
+              Retira su alimento por 2 horas y vigila que no repita. Si presenta decaimiento, avísame de inmediato para comunicarte con el equipo veterinario en turno.
+            </div>
+          </div>
+
+          <div class="chat-input-bar">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Escribe los síntomas de tu mascota..." onkeypress="if(event.key==='Enter') sendChatMessage()" />
+            <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================
+           SCREEN 4: MIS MASCOTAS (EXPEDIENTE Y CARNET)
+           ============================================== -->
+      <div id="screen-mascotas" class="screen-content">
+        
+        <div class="app-section-title">
+          <span>Expedientes Médicos</span>
+        </div>
+
+        <!-- Luna Detail -->
+        <div class="card" style="margin-bottom: 1rem; border-color: var(--border);">
+          <div style="display: flex; gap: 0.85rem; align-items: center; margin-bottom: 0.75rem;">
+            <div class="pet-card-avatar" style="margin: 0; width: 54px; height: 54px; font-size: 1.8rem;">🐕</div>
+            <div>
+              <h3 style="font-family: var(--font-title); font-size: 1.15rem; font-weight: 700;">Luna</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Golden Retriever · Hembra · 28.5 kg</p>
+              <span class="pet-chip" style="background: var(--success-bg); color: var(--success); margin-top: 0.2rem;">Chip #941000028491</span>
+            </div>
+          </div>
+
+          <div style="background: var(--surface-subtle); padding: 0.8rem; border-radius: var(--radius-sm); font-size: 0.78rem; line-height: 1.5; margin-bottom: 0.75rem;">
+            <strong>Historial clínico:</strong> Esterilizada en 2024. Sin alergias registradas. Tratamiento antiparasitario al día (Bravecto hasta Dic 2026).
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="icon-btn" style="flex: 1; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; font-family: var(--font-title);" onclick="alert('Descargando carnet de vacunación oficial en PDF...')">
+              📄 Carnet Vacunas
+            </button>
+            <button class="btn-emergency" style="flex: 1; background: var(--accent); color: #041f16; justify-content: center; box-shadow: none;" onclick="switchTab('citas')">
+              Pedir Hora
+            </button>
+          </div>
+        </div>
+
+        <!-- Milo Detail -->
+        <div class="card" style="margin-bottom: 1rem; border-color: var(--border);">
+          <div style="display: flex; gap: 0.85rem; align-items: center; margin-bottom: 0.75rem;">
+            <div class="pet-card-avatar" style="margin: 0; width: 54px; height: 54px; font-size: 1.8rem;">🐶</div>
+            <div>
+              <h3 style="font-family: var(--font-title); font-size: 1.15rem; font-weight: 700;">Milo</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Chihuahua · Macho · 3.1 kg</p>
+              <span class="pet-chip" style="background: var(--warning-bg); color: var(--warning); margin-top: 0.2rem;">Vacuna Antirrábica pendiente</span>
+            </div>
+          </div>
+
+          <div style="background: var(--surface-subtle); padding: 0.8rem; border-radius: var(--radius-sm); font-size: 0.78rem; line-height: 1.5; margin-bottom: 0.75rem;">
+            <strong>Sensibilidad calificada:</strong> Parámetros cardíacos ajustados a raza miniatura para monitorización equitativa.
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="icon-btn" style="flex: 1; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; font-family: var(--font-title);" onclick="alert('Descargando carnet de vacunación oficial en PDF...')">
+              📄 Carnet Vacunas
+            </button>
+            <button class="btn-emergency" style="flex: 1; background: var(--accent); color: #041f16; justify-content: center; box-shadow: none;" onclick="switchTab('citas')">
+              Pedir Hora
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================
+           SCREEN 5: CITAS Y AGENDAMIENTO
+           ============================================== -->
+      <div id="screen-citas" class="screen-content">
+        
+        <div class="app-section-title">
+          <span>Agendar Nueva Cita</span>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.25rem;">
+          <form onsubmit="event.preventDefault(); bookAppointment();">
+            <div style="margin-bottom: 0.85rem;">
+              <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">Mascota</label>
+              <select id="bookPet" class="chat-input" style="width: 100%; border-radius: var(--radius-sm);">
+                <option value="Luna">🐕 Luna (Golden Retriever)</option>
+                <option value="Milo">🐶 Milo (Chihuahua)</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 0.85rem;">
+              <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">Motivo de la consulta</label>
+              <select id="bookReason" class="chat-input" style="width: 100%; border-radius: var(--radius-sm);">
+                <option value="Control General">Control Preventivo Anual</option>
+                <option value="Vacunación">Vacunación / Desparasitación</option>
+                <option value="Dental">Limpieza Dental</option>
+                <option value="Dermatología">Revisión de Piel y Alergias</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 0.85rem;">
+              <label style="font-size: 0.78rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">Fecha deseada</label>
+              <input type="date" id="bookDate" class="chat-input" style="width: 100%; border-radius: var(--radius-sm);" value="2026-09-18" />
+            </div>
+
+            <button type="submit" class="btn-submit-triage" style="margin-top: 0.5rem;">
+              Confirmar Reserva
+            </button>
+          </form>
+        </div>
+
+        <div class="app-section-title">
+          <span>Historial de Visitas</span>
+        </div>
+
+        <div class="card" style="padding: 1rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.825rem; font-weight: 700;">
+            <span>Chequeo General</span>
+            <span style="color: var(--accent);">15 Jun 2026</span>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Mascota: Milo · Dr. Camila Soto · Diagnóstico: Estado óptimo, peso estable (3.1 kg).
+          </p>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- App Bottom Tab Bar Navigation -->
+    <nav class="app-bottom-nav">
+      <button class="nav-tab active" data-tab="home" onclick="switchTab('home')">
+        <span class="nav-tab-icon">🏠</span>
+        <span>Inicio</span>
+      </button>
+
+      <button class="nav-tab" data-tab="triaje" onclick="switchTab('triaje')">
+        <span class="nav-tab-icon">🩺</span>
+        <span>Triaje</span>
+      </button>
+
+      <button class="nav-tab" data-tab="chat" onclick="switchTab('chat')">
+        <span class="nav-tab-icon">💬</span>
+        <span>Chat Vet</span>
+      </button>
+
+      <button class="nav-tab" data-tab="mascotas" onclick="switchTab('mascotas')">
+        <span class="nav-tab-icon">🐾</span>
+        <span>Mascotas</span>
+      </button>
+
+      <button class="nav-tab" data-tab="citas" onclick="switchTab('citas')">
+        <span class="nav-tab-icon">📅</span>
+        <span>Citas</span>
+      </button>
+    </nav>
+
+    <!-- Small desktop link to report -->
+    <div class="desktop-notice">
+      <a href="index.html" title="Ver reporte metodológico">➔ Volver al Reporte de Hallazgos</a>
+    </div>
+
+  </div>
+
+  <!-- Interactive Logic -->
+  <script>
+    // State of triage answers
+    const triageAnswers = {
+      resp: 'normal',
+      consciencia: 'normal',
+      dolor: 'normal'
+    };
+
+    // Tab Navigation
+    const titles = {
+      home: 'Vet Active Pro',
+      triaje: 'Triaje Digital',
+      chat: 'Chat Clínico Asistido',
+      mascotas: 'Mis Mascotas',
+      citas: 'Gestión de Citas'
+    };
+
+    function switchTab(tabId) {
+      // Update Tab active state
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        if (tab.getAttribute('data-tab') === tabId) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      // Update Screen active state
+      document.querySelectorAll('.screen-content').forEach(sc => {
+        sc.classList.remove('active');
+      });
+      const targetScreen = document.getElementById('screen-' + tabId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+
+      // Update Top Title
+      const titleElem = document.getElementById('viewTitle');
+      if (titleElem && titles[tabId]) {
+        titleElem.textContent = titles[tabId];
+      }
+
+      // Scroll viewport to top
+      const viewport = document.querySelector('.screen-viewport');
+      if (viewport) viewport.scrollTop = 0;
+    }
+
+    // Option Selector for Triage
+    function selectOption(elem, category, severity) {
+      const parent = elem.closest('.option-list');
+      parent.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('selected'));
+      elem.classList.add('selected');
+      triageAnswers[category] = severity;
+    }
+
+    // Triage Evaluation Algorithm (Observable, Race-neutral)
+    function evaluateTriage() {
+      const resultBox = document.getElementById('triageResult');
+      const resBadge = document.getElementById('resBadge');
+      const resTitle = document.getElementById('resTitle');
+      const resDesc = document.getElementById('resDesc');
+      const resActionBtn = document.getElementById('resActionBtn');
+
+      let level = 3; // Default Normal
+
+      if (triageAnswers.resp === 'grave' || triageAnswers.consciencia === 'grave' || triageAnswers.dolor === 'grave') {
+        level = 1;
+      } else if (triageAnswers.resp === 'moderado' || triageAnswers.consciencia === 'moderado' || triageAnswers.dolor === 'moderado') {
+        level = 2;
+      }
+
+      resultBox.style.display = 'block';
+
+      if (level === 1) {
+        resultBox.style.background = 'var(--danger-bg)';
+        resultBox.style.borderColor = 'var(--danger-border)';
+        resBadge.className = 'result-badge badge-danger';
+        resBadge.textContent = '🔴 Nivel 1 — Crítico (≤1 Hora)';
+        resTitle.textContent = 'Riesgo Vital Inminente Detectado';
+        resTitle.style.color = 'var(--danger)';
+        resDesc.textContent = 'Se han detectado signos de compromiso severo en oxigenación, consciencia o dolor agudo. Hemos pre-alertado a la sala de emergencias. Dirígete de inmediato a la clínica veterinaria.';
+        resActionBtn.style.display = 'flex';
+        resActionBtn.style.background = 'var(--danger)';
+        resActionBtn.textContent = '🚨 Llamar a Urgencias Ahora';
+      } else if (level === 2) {
+        resultBox.style.background = 'var(--warning-bg)';
+        resultBox.style.borderColor = 'var(--warning-border)';
+        resBadge.className = 'result-badge badge-warning';
+        resBadge.textContent = '🟡 Nivel 2 — Prioritario (1-2 Horas)';
+        resTitle.textContent = 'Atención Veterinaria Requerida';
+        resTitle.style.color = 'var(--warning)';
+        resDesc.textContent = 'Tu mascota presenta alteraciones fisiológicas que requieren evaluación presencial prioritaria dentro de las próximas 2 horas para evitar complicaciones.';
+        resActionBtn.style.display = 'flex';
+        resActionBtn.style.background = 'var(--warning)';
+        resActionBtn.textContent = '📅 Reservar Turno Prioritario';
+      } else {
+        resultBox.style.background = 'var(--success-bg)';
+        resultBox.style.borderColor = 'var(--success-border)';
+        resBadge.className = 'result-badge badge-success';
+        resBadge.textContent = '🟢 Nivel 3 — Normal (Estable)';
+        resTitle.textContent = 'Parámetros Fisiológicos Estables';
+        resTitle.style.color = 'var(--success)';
+        resDesc.textContent = 'Los signos observados no indican una emergencia aguda. Puedes coordinar una consulta preventiva regular o realizar seguimiento por nuestro chat asistido.';
+        resActionBtn.style.display = 'flex';
+        resActionBtn.style.background = 'var(--accent)';
+        resActionBtn.textContent = '💬 Consultar Dudas por Chat';
+      }
+
+      resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Chat Interactive Simulation
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chatMessages');
+
+      // User Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble chat-user';
+      userBubble.textContent = text;
+      container.appendChild(userBubble);
+      input.value = '';
+
+      // Scroll
+      const viewport = document.querySelector('.screen-viewport');
+      viewport.scrollTop = viewport.scrollHeight;
+
+      // Bot Automated / Supervised Response
+      setTimeout(() => {
+        const botBubble = document.createElement('div');
+        botBubble.className = 'chat-bubble chat-bot';
+        
+        const lower = text.toLowerCase();
+        let reply = "He registrado los síntomas observados. Un asistente del equipo clínico está supervisando esta consulta. Si notas dificultad respiratoria o falta de respuesta, activa el Triaje de Emergencia inmediatamente.";
+
+        if (lower.includes('sangre') || lower.includes('desmayo') || lower.includes('ahogo')) {
+          reply = "⚠️ ALERTA: Esos síntomas son de alta gravedad. Te recomendamos pasar de inmediato al módulo de Triaje o pulsar el botón de llamada de urgencias 24/7.";
+        } else if (lower.includes('comida') || lower.includes('alimento') || lower.includes('dieta')) {
+          reply = "Para cambios de alimentación te recomendamos una transición gradual de 5 a 7 días. Puedes agendar un control de nutrición en la sección de Citas.";
+        }
+
+        botBubble.innerHTML = `<span class="chat-bot-badge">VetBot · Supervisión Clínica</span>${reply}`;
+        container.appendChild(botBubble);
+        viewport.scrollTop = viewport.scrollHeight;
+      }, 700);
+    }
+
+    // Appointment Booking
+    function bookAppointment() {
+      const pet = document.getElementById('bookPet').value;
+      const reason = document.getElementById('bookReason').value;
+      const date = document.getElementById('bookDate').value;
+      alert(`¡Cita confirmada con éxito!\n\nMascota: ${pet}\nMotivo: ${reason}\nFecha: ${date}\n\nTe hemos enviado un recordatorio a tu correo.`);
+      switchTab('home');
+    }
+
+    // Clock updater
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const timeElem = document.getElementById('currentTime');
+      if (timeElem) timeElem.textContent = `${hours}:${mins}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Theme Toggle inside phone
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.textContent = '🌙';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeBtn.textContent = '☀️';
+      }
+    });
+  </script>
+</body>
+</html>
