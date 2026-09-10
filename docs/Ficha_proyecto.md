@@ -20,15 +20,15 @@ Claude 3.5 Sonnet / Llama 3 (vía Hugging Face): Candidato alternativo para la c
 Gemini - Nano Banana: Generación de imágenes.
 
 ## 6. Roadmap del proyecto (se completa clase a clase)
-- [ ] Clase 23 — Datasheet del dataset (`docs/datasheet_v1.md`)
-- [ ] Clase 24 — Hallazgos NotebookLM (`docs/hallazgos_notebooklm.md`)
-- [ ] Clase 25 — System prompt (`docs/system_prompt_v3.md`)
-- [ ] Clase 26 — Modelos HF candidatos (`docs/modelos_hf_candidatos.md`)
-- [ ] Clase 27 — Sistema visual (`docs/sistema_visual.md`)
-- [ ] Clase 28 — Arquitectura del agente (`docs/arquitectura_agente.md`)
-- [ ] Clase 29 — Video generativo (`docs/video_generativo.md`)
-- [ ] Clase 30 — Casos de uso Hermes (`docs/hermes_casos_uso.md`)
-- [ ] Clase 31 — Antigravity Loop + cierre (`docs/antigravity_loop.md`)
+- [ ] Clase 23 — Datasheet del dataset (`Clase 3/base_datos_veterinaria_ampliada_con_resenas.csv`)
+- [ ] Clase 24 — Hallazgos NotebookLM (`Clase 4/ACTIVIDAD`)
+- [ ] Clase 25 — System prompt (`Clase 5/ACTIVIDAD`)
+- [ ] Clase 26 — Modelos HF candidatos (`Clase 6/ACTIVIDAD`)
+- [ ] Clase 27 — Sistema visual (`Clase 7/ACTIVIDAD`)
+- [ ] Clase 28 — Arquitectura del agente (`Clase 8/ACTIVIDAD`)
+- [ ] Clase 29 — Video generativo (`Clase 9/PROTOTIPO APP`)
+- [ ] Clase 30 — Casos de uso Hermes (`Clase 9/SCREENSHOTS HERMES`)
+- [ ] Clase 31 — Antigravity Loop + cierre (`Clase 10/ACTIVIDAD`)
 
 ## 7. Notas para Mauricio (Unidad 4)
 Qué necesita saber quien reciba este proyecto en la próxima unidad:
